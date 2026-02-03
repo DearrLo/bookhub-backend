@@ -1,0 +1,3 @@
+# Force le format de fin de ligne standard
+* text=auto eol=lf
+*.bat text eol=crlf
