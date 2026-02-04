@@ -2,6 +2,7 @@ package com.bookhub.bo;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class Reservation {
     private LocalDateTime dateDeDemande;
 
     @NotNull
+    @Size(max = 20)
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private Statut statut;

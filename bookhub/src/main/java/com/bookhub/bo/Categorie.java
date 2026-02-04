@@ -3,6 +3,7 @@ package com.bookhub.bo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class Categorie {
     private Integer id;
 
     @NotBlank
+    @Size(max = 20)
     @Column(name = "LABEL", nullable = false, length = 20)
     private String libelle;
 
