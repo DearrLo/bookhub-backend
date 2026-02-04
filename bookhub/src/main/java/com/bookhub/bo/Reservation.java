@@ -1,6 +1,7 @@
 package com.bookhub.bo;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,19 +20,21 @@ public class Reservation {
     @Column(name="RESERVATION_ID")
     private Integer id;
 
+    @NotNull
     @Column(name = "REQUEST_DATE", nullable = false)
     private LocalDateTime dateDeDemande;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private Statut statut;
 
-    @ManyToOne
-    @JoinColumn(name = "BOOK_ID", nullable = false)
-    private Livre livre;
-
-    @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private Utilisateur utilisateur;
+//    @ManyToOne
+//    @JoinColumn(name = "BOOK_ID", nullable = false)
+//    private Livre livre;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "USER_ID", nullable = false)
+//    private Utilisateur utilisateur;
 
 }

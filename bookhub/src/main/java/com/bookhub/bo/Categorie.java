@@ -1,6 +1,8 @@
 package com.bookhub.bo;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ public class Categorie {
     @Column(name="CATEGORY_ID")
     private Integer id;
 
+    @NotBlank
     @Column(name = "LABEL", nullable = false, length = 20)
     private String libelle;
 
