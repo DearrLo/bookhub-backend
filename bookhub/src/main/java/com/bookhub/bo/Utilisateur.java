@@ -10,7 +10,7 @@ import lombok.*;
 @EqualsAndHashCode(of = { "email" })
 @Entity
 
-@Table(name = "USER")
+@Table(name = "BOOKHUB_USER")
 public class Utilisateur {
 
 	@Id
@@ -18,10 +18,10 @@ public class Utilisateur {
 	private String email;
 
 	@Column(name = "NAME", nullable = false, length = 100)
-	private String nom;
+	private String prenom;
 
 	@Column(name = "SURNAME", nullable = false, length = 100)
-	private String prenom;
+	private String nom;
 
 	@Column(name = "PSEUDONYM", length = 100)
 	private String pseudo;

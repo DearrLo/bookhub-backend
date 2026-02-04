@@ -39,8 +39,8 @@ public class Livre {
 	private String resume;
 
 	@Column(name = "COVER_IMAGE_URL")
-	private String coverImageUrl;
+	private String urlImage;
 
 	@Column(name = "CREATED_AT")
-	private LocalDateTime createdAt;
+	private LocalDateTime dateDeCreation;
 }
