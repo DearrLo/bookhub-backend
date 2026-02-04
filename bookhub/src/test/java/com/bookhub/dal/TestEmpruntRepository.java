@@ -35,7 +35,7 @@ public class TestEmpruntRepository {
 //                .nom("Toussaint")
 //                .prenom("Soléna")
 //                .motDePasse("solena8")
-//                .autorisations("USER")
+//                .autorisations("LECTEUR")
 //                .build();
 //
 //        utilisateurDB = entityManager.persistFlushFind(entiteUtilisateur);

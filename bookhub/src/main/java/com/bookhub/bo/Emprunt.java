@@ -31,14 +31,14 @@ public class Emprunt {
     @Column(name = "RETURNED_DATE")
     private LocalDateTime dateDeRetourEffective;
 
-//    @ManyToOne
-//    @NotNull
-//    @JoinColumn(name = "BOOK_ID", nullable = false)
-//    private Livre livre;
-//
-//    @ManyToOne
-//    @NotNull
-//    @JoinColumn(name = "USER_ID", nullable = false)
-//    private Utilisateur utilisateur;
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "BOOK_ID", nullable = false)
+    private Livre livre;
+
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private Utilisateur utilisateur;
 
 }

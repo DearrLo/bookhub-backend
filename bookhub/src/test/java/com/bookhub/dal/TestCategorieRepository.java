@@ -2,8 +2,11 @@ package com.bookhub.dal;
 
 import com.bookhub.bo.Categorie;
 import com.bookhub.bo.Commentaire;
+import com.bookhub.bo.Livre;
+import com.bookhub.bo.Utilisateur;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -25,33 +28,6 @@ public class TestCategorieRepository {
     @Autowired
     private CategorieRepository categorieRepository;
 
-//    private Utilisateur utilisateurDB;
-//    private Livre livreDB;
-//
-//    @BeforeEach
-//    public void before() {
-//        final Utilisateur entiteUtilisateur = Utilisateur.builder()
-//                .email("solena8@gmail.com")
-//                .nom("Toussaint")
-//                .prenom("Soléna")
-//                .motDePasse("solena8")
-//                .autorisations("USER")
-//                .build();
-//
-//        utilisateurDB = entityManager.persistFlushFind(entiteUtilisateur);
-//
-//        final Livre entiteLivre = Livre.builder()
-//                .isbn("1ANHY6LGJTUEZKSHG")
-//                .titre("Le super livre")
-//                .auteur("Bob Razowski")
-//                .stock(8)
-//                .resume("Une aventure épique")
-//                .urlImage("https://exemple.com/image.jpg")
-//                .dateDeCreation(LocalDateTime.now())
-//                .build();
-//
-//        livreDB = entityManager.persistFlushFind(entiteLivre);
-//    }
 
     @Test
     public void test_save_categorie_correct() {

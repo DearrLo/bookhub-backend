@@ -38,11 +38,11 @@ public class Commentaire {
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime dateDeCreation;
 
-//    @ManyToOne
-//    @JoinColumn(name = "BOOK_ID", nullable = false)
-//    private Livre livre;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "USER_ID", nullable = false)
-//    private Utilisateur utilisateur;
+    @ManyToOne
+    @JoinColumn(name = "BOOK_ID", nullable = false)
+    private Livre livre;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private Utilisateur utilisateur;
 }

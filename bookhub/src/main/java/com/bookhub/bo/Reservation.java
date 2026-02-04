@@ -30,12 +30,12 @@ public class Reservation {
     @Column(length = 20, nullable = false)
     private Statut statut;
 
-//    @ManyToOne
-//    @JoinColumn(name = "BOOK_ID", nullable = false)
-//    private Livre livre;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "USER_ID", nullable = false)
-//    private Utilisateur utilisateur;
+    @ManyToOne
+    @JoinColumn(name = "BOOK_ID", nullable = false)
+    private Livre livre;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private Utilisateur utilisateur;
 
 }
