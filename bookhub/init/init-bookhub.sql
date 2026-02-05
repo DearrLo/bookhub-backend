@@ -1,0 +1,8 @@
+IF NOT EXISTS (
+    SELECT name FROM sys.databases WHERE name = 'BOOKHUB'
+)
+BEGIN
+    CREATE DATABASE BOOKHUB;
+END
+GO
+

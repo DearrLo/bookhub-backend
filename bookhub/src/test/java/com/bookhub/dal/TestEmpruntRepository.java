@@ -72,6 +72,7 @@ public class TestEmpruntRepository {
                 .dateDeRetourEffective(dateFixe)
                 .utilisateur(utilisateurDB)
                 .livre(livreDB)
+                .statut(StatutEmprunt.EN_DEMANDE_EMPRUNT)
                 .build();
 
         final Emprunt sauvegarde = empruntRepository.save(entiteEmprunt);
@@ -89,6 +90,7 @@ public class TestEmpruntRepository {
                 .dateDeRetourEffective(LocalDateTime.now())
                 .utilisateur(utilisateurDB)
                 .livre(livreDB)
+                .statut(StatutEmprunt.EN_DEMANDE_EMPRUNT)
                 .build();
 
         assertThrows(ConstraintViolationException.class, () -> {
@@ -100,13 +102,14 @@ public class TestEmpruntRepository {
 
     @Test
     public void test_delete() {
-            final Emprunt entiteEmprunt = Emprunt.builder()
-                    .dateDEmprunt(LocalDateTime.now())
-                    .dateDeRetourAttendue(LocalDateTime.now())
-                    .dateDeRetourEffective(LocalDateTime.now())
+        final Emprunt entiteEmprunt = Emprunt.builder()
+                .dateDEmprunt(LocalDateTime.now())
+                .dateDeRetourAttendue(LocalDateTime.now())
+                .dateDeRetourEffective(LocalDateTime.now())
                 .utilisateur(utilisateurDB)
+                .statut(StatutEmprunt.EN_DEMANDE_EMPRUNT)
                 .livre(livreDB)
-                    .build();
+                .build();
 
         final Emprunt aSupprimer = empruntRepository.save(entiteEmprunt);
         Integer id = aSupprimer.getId();

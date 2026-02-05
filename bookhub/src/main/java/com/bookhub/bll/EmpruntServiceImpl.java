@@ -22,7 +22,7 @@ public class EmpruntServiceImpl implements EmpruntService {
         Utilisateur lecteur = emprunt.getUtilisateur();
         if (lecteur == null) throw new RuntimeException("Le lecteur est obligatoire");
 
-        long nbEmpruntsActifs = empruntRepository.countByUtilisateur_EmailAndDateRetourReelleIsNull(lecteur.getEmail());
+        long nbEmpruntsActifs = empruntRepository.countByUtilisateur_EmailAndDateDeRetourEffectiveIsNull(lecteur.getEmail());
         if (nbEmpruntsActifs >= 3) {
             throw new RuntimeException("Limite de 3 emprunts actifs atteinte.");
         }
