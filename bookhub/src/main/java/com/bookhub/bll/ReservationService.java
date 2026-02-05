@@ -1,9 +1,13 @@
 package com.bookhub.bll;
 
 import com.bookhub.bo.Reservation;
+import com.bookhub.bo.Statut;
 
 public interface ReservationService {
 
-    void reserverLivre(Reservation reservation);
-    void annulerReservation(int idLivre, int idLecteur);
+    Reservation reserverLivre(Reservation reservation);
+
+    Reservation mettreAJourStatut(Integer idReservation, Statut nouveauStatut);
+
+    void annulerReservation(Integer idLivre, String emailUtilisateur);
 }
