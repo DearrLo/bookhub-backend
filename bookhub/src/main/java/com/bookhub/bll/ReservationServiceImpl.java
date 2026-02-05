@@ -2,6 +2,7 @@ package com.bookhub.bll;
 
 import com.bookhub.bo.Reservation;
 import com.bookhub.bo.Statut;
+import com.bookhub.bo.Utilisateur;
 import com.bookhub.dal.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,16 @@ public class ReservationServiceImpl implements ReservationService{
         if (reservation.getLivre() == null) {
             throw new RuntimeException("Le livre est obligatoire");
         }
-        if (reservation.getUtilisateur() == null) {
+        Utilisateur lecteur = reservation.getUtilisateur();
+        if (lecteur == null) {
             throw new RuntimeException("Le lecteur est obligatoire");
+        }
+        long nbReservationsActives = reservationRepository.countByUtilisateur_EmailAndStatutNot(
+                lecteur.getEmail(),
+                Statut.ANNULEE
+        );
+        if (nbReservationsActives >= 5) {
+            throw new RuntimeException("Limite de 5 réservations actives atteinte.");
         }
         reservation.setStatut(Statut.EN_ATTENTE);
         reservation.setDateDeDemande(LocalDateTime.now());

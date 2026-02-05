@@ -2,6 +2,7 @@ package com.bookhub.dal;
 
 import com.bookhub.bo.Emprunt;
 import com.bookhub.bo.Reservation;
+import com.bookhub.bo.Statut;
 import com.bookhub.bo.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,10 +11,12 @@ import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
-        Optional<Reservation> findByLivreIdAndUtilisateurEmail(Integer idLivre, String emailUtilisateur);
+    Optional<Reservation> findByLivreIdAndUtilisateurEmail(Integer idLivre, String emailUtilisateur);
 
-        List<Reservation> findByUtilisateur(Utilisateur utilisateur);
+    List<Reservation> findByUtilisateur(Utilisateur utilisateur);
 
+    // Compte les réservations actives (EN_ATTENTE ou DISPO) pour un utilisateur
+    long countByUtilisateur_EmailAndStatutNot(String email, Statut statut);
 
 
 }
