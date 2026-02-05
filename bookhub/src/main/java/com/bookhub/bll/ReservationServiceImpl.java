@@ -27,7 +27,7 @@ public class ReservationServiceImpl implements ReservationService{
 
     @Override
     public void annulerReservation(int idLivre, int idLecteur) {
-        Reservation reservation = reservationRepository.findByLivreIdAndUtilisateurId(idLivre, idLecteur)
+        Reservation reservation = reservationRepository.findByLivreIdAndUtilisateurEmail(idLivre, idLecteur)
                 .orElseThrow(() -> new RuntimeException("Réservation introuvable"));
         reservation.setStatut(Statut.ANNULEE);
         reservationRepository.save(reservation);

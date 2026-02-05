@@ -45,7 +45,7 @@ public class TestCommentaireRepository {
                 .libelle("Fiction")
                 .build();
 
-        final Categorie aSupprimer = categorieRepository.save(entiteCategorie);
+        final Categorie cat = categorieRepository.save(entiteCategorie);
 
         utilisateurDB = entityManager.persistFlushFind(entiteUtilisateur);
 
@@ -54,6 +54,7 @@ public class TestCommentaireRepository {
                 .titre("Le super livre")
                 .auteur("Bob Razowski")
                 .stock(8)
+                .categorie(cat)
                 .resume("Une aventure épique")
                 .urlImage("https://exemple.com/image.jpg")
                 .dateDeCreation(LocalDateTime.now())
@@ -68,8 +69,8 @@ public class TestCommentaireRepository {
                 .commentaire("j'ai beaucoup aimé")
                 .note(5)
                 .dateDeCreation(LocalDateTime.now())
-//                .utilisateur(utilisateurDB)
-//                .livre(livreDB)
+                .utilisateur(utilisateurDB)
+                .livre(livreDB)
                 .build();
 
         final Commentaire sauvegarde = commentaireRepository.save(entiteCommentaire);
@@ -86,8 +87,8 @@ public class TestCommentaireRepository {
                 .commentaire("j'ai beaucoup aimé")
                 .note(7)
                 .dateDeCreation(LocalDateTime.now())
-//                .utilisateur(utilisateurDB)
-//                .livre(livreDB)
+                .utilisateur(utilisateurDB)
+                .livre(livreDB)
                 .build();
 
         assertThrows(ConstraintViolationException.class, () -> {
@@ -101,8 +102,8 @@ public class TestCommentaireRepository {
         final Commentaire entiteCommentaire = Commentaire.builder()
                 .commentaire("j'ai beaucoup aimé")
                 .dateDeCreation(LocalDateTime.now())
-//                .utilisateur(utilisateurDB)
-//                .livre(livreDB)
+                .utilisateur(utilisateurDB)
+                .livre(livreDB)
                 .build();
 
         assertThrows(ConstraintViolationException.class, () -> {
@@ -117,8 +118,8 @@ public class TestCommentaireRepository {
                 .commentaire("Commentaire éphémère")
                 .note(3)
                 .dateDeCreation(LocalDateTime.now())
-//                .utilisateur(utilisateurDB)
-//                .livre(livreDB)
+                .utilisateur(utilisateurDB)
+                .livre(livreDB)
                 .build();
 
         final Commentaire aSupprimer = commentaireRepository.save(entiteCommentaire);
