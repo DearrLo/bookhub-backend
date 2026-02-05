@@ -1,7 +1,7 @@
 package com.bookhub.bll;
 
 import com.bookhub.bo.Reservation;
-import com.bookhub.bo.Statut;
+import com.bookhub.bo.StatutResa;
 import com.bookhub.bo.Utilisateur;
 import com.bookhub.dal.ReservationRepository;
 import lombok.AllArgsConstructor;
@@ -29,12 +29,12 @@ public class ReservationServiceImpl implements ReservationService{
         }
         long nbReservationsActives = reservationRepository.countByUtilisateur_EmailAndStatutNot(
                 lecteur.getEmail(),
-                Statut.ANNULEE
+                StatutResa.ANNULEE
         );
         if (nbReservationsActives >= 5) {
             throw new RuntimeException("Limite de 5 réservations actives atteinte.");
         }
-        reservation.setStatut(Statut.EN_ATTENTE);
+        reservation.setStatut(StatutResa.EN_ATTENTE);
         reservation.setDateDeDemande(LocalDateTime.now());
 
     }
@@ -50,7 +50,7 @@ public class ReservationServiceImpl implements ReservationService{
     }
 
     @Override
-    public Reservation mettreAJourStatut(Integer idReservation, Statut nouveauStatut) {
+    public Reservation mettreAJourStatut(Integer idReservation, StatutResa nouveauStatut) {
         Reservation reservation = reservationRepository.findById(idReservation)
                 .orElseThrow(() -> new RuntimeException("Réservation introuvable"));
         reservation.setStatut(nouveauStatut);
@@ -63,7 +63,7 @@ public class ReservationServiceImpl implements ReservationService{
     public void annulerReservation(Integer idLivre, String emailUtilisateur) {
         Reservation reservation = reservationRepository.findByLivreIdAndUtilisateurEmail(idLivre, emailUtilisateur)
                 .orElseThrow(() -> new RuntimeException("Réservation introuvable"));
-        reservation.setStatut(Statut.ANNULEE);
+        reservation.setStatut(StatutResa.ANNULEE);
         reservationRepository.save(reservation);
     }
 }

@@ -2,7 +2,6 @@ package com.bookhub.bo;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -27,8 +26,8 @@ public class Reservation {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private Statut statut;
+    @Column(name = "RESERVATION_STATUS", length = 20, nullable = false)
+    private StatutResa statut;
 
     @ManyToOne
     @JoinColumn(name = "BOOK_ID", nullable = false)

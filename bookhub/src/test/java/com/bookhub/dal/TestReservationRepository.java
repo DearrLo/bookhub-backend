@@ -67,7 +67,7 @@ public class TestReservationRepository {
     public void test_save_reservation_correct() {
         final Reservation entiteReservation = Reservation.builder()
                 .dateDeDemande(LocalDateTime.now())
-                .statut(Statut.EN_ATTENTE)
+                .statut(StatutResa.EN_ATTENTE)
                 .utilisateur(utilisateurDB)
                 .livre(livreDB)
                 .build();
@@ -82,7 +82,7 @@ public class TestReservationRepository {
     @Test
     public void test_save_reservation_sans_date_de_demande() {
         final Reservation entiteReservation = Reservation.builder()
-                .statut(Statut.EN_ATTENTE)
+                .statut(StatutResa.EN_ATTENTE)
                 .utilisateur(utilisateurDB)
                 .livre(livreDB)
                 .build();
@@ -112,7 +112,7 @@ public class TestReservationRepository {
     public void test_delete() {
         final Reservation entiteReservation = Reservation.builder()
                 .dateDeDemande(LocalDateTime.now())
-                .statut(Statut.EN_ATTENTE)
+                .statut(StatutResa.EN_ATTENTE)
                 .utilisateur(utilisateurDB)
                 .livre(livreDB)
                 .build();

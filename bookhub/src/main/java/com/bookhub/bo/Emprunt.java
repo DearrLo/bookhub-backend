@@ -41,4 +41,10 @@ public class Emprunt {
     @JoinColumn(name = "USER_ID", nullable = false)
     private Utilisateur utilisateur;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "BORROWING_STATUS", length = 20, nullable = false)
+    private StatutEmprunt statut;
+
+
 }

@@ -1,6 +1,6 @@
 package com.bookhub.bo;
 
-public enum Statut {
+public enum StatutResa {
     EN_ATTENTE,
     DISPO,
     ANNULEE

@@ -11,7 +11,10 @@ import java.util.List;
 
 public interface EmpruntRepository extends JpaRepository<Emprunt, Integer> {
 
-    List<Emprunt> findByUtilisateur(Utilisateur utilisateur);
+    List<Emprunt> findByUtilisateur_EmailOrderByDateDEmpruntDesc(String email);
+
+//  pour compter les emprunts en cours pour UN utilisateur spécifique
+    long countByUtilisateur_EmailAndDateRetourReelleIsNull(String email);
 
 //    pour trouver les retards d'un utilisateur
     List<Emprunt> findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(
