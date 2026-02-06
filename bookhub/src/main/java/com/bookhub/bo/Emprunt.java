@@ -13,15 +13,15 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 
 @Entity
-@Table(name = "BORROWING")
+@Table(name = "LOAN")
 public class Emprunt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="BORROWING_ID")
+    @Column(name="LOAN_ID")
     private Integer id;
 
     @NotNull
-    @Column(name = "BORROWING_DATE", nullable = false)
+    @Column(name = "LOAN_DATE", nullable = false)
     private LocalDateTime dateDEmprunt;
 
     @NotNull
@@ -43,7 +43,7 @@ public class Emprunt {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "BORROWING_STATUS", length = 20, nullable = false)
+    @Column(name = "LOAN_STATUS", length = 20, nullable = false)
     private StatutEmprunt statut;
 
 

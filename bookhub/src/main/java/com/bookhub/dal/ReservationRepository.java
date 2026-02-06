@@ -12,7 +12,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
     Optional<Reservation> findByLivreIdAndUtilisateurEmail(Integer idLivre, String emailUtilisateur);
 
-    List<Reservation> findByUtilisateur(Utilisateur utilisateur);
+    List<Reservation> findByUtilisateur_EmailOrderByDateDEmpruntDesc(String email);
 
     // Compte les réservations actives (EN_ATTENTE ou DISPO) pour un utilisateur
     long countByUtilisateur_EmailAndStatutNot(String email, StatutResa statut);

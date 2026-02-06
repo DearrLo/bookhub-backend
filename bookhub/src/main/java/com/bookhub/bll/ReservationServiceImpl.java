@@ -8,15 +8,24 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class ReservationServiceImpl implements ReservationService{
+public class ReservationServiceImpl implements ReservationService {
 
     private ReservationRepository reservationRepository;
 
+    @Override
+    public List<Reservation> trouverParEmail(String email) {
+        return reservationRepository.findByUtilisateur_EmailOrderByDateDEmpruntDesc(email);
+    }
 
-    private void validerReservation(Reservation reservation){
+    @Override
+    public void supprimer(Integer id) {
+        reservationRepository.deleteById(id);
+    }
+    private void validerReservation(Reservation reservation) {
         if (reservation == null) {
             throw new RuntimeException("La réservation est obligatoire");
         }
@@ -56,7 +65,6 @@ public class ReservationServiceImpl implements ReservationService{
         reservation.setStatut(nouveauStatut);
         return reservationRepository.save(reservation);
     }
-
 
 
     @Override
