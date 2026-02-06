@@ -66,7 +66,7 @@ public class LivreController {
         }
     }
 
-    @PutMapping("/api/books/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> miseAJourLivre(@Valid @RequestBody Livre livre) {
         try {
             if (livre == null || livre.getId() == null || livre.getId() <= 0) {

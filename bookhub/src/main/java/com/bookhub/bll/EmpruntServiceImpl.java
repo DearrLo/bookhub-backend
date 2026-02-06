@@ -54,12 +54,14 @@ public class EmpruntServiceImpl implements EmpruntService {
     @Transactional
     @Override
     public void validerRetourLivre(Emprunt emprunt) {
-        emprunt.setStatut(StatutEmprunt.RENDU);
-        emprunt.setDateDeRetourEffective(LocalDateTime.now());
-        Livre livre = emprunt.getLivre();
+        Emprunt empruntEnBase = empruntRepository.findById(emprunt.getId())
+                        .orElseThrow(() -> new RuntimeException("Emprunt introuvable"));
+        empruntEnBase.setStatut(StatutEmprunt.RENDU);
+        empruntEnBase.setDateDeRetourEffective(LocalDateTime.now());
+        Livre livre = empruntEnBase.getLivre();
         livre.setStock(livre.getStock() + 1);
 
-        empruntRepository.save(emprunt);
+        empruntRepository.save(empruntEnBase);
     }
 
     @Override

@@ -32,8 +32,20 @@ public class LivreServiceImpl implements LivreService {
 	}
 
 	@Override
-	public Livre modifier(Livre livre) {
-		return livreRepository.save(livre);
+	public Livre modifier(Livre livreEnvoye) {
+		Livre livreEnBase = livreRepository.findById(livreEnvoye.getId())
+				.orElseThrow(() -> new RuntimeException("Livre introuvable"));
+		livreEnBase.setTitre(livreEnvoye.getTitre());
+		livreEnBase.setAuteur(livreEnvoye.getAuteur());
+		livreEnBase.setIsbn(livreEnvoye.getIsbn());
+
+		if (livreEnvoye.getStock() != null) {
+			livreEnBase.setStock(livreEnvoye.getStock());
+		}
+		if (livreEnvoye.getCategorie() != null) {
+			livreEnBase.setCategorie(livreEnvoye.getCategorie());
+		}
+		return livreRepository.save(livreEnBase);
 	}
 
 	@Override

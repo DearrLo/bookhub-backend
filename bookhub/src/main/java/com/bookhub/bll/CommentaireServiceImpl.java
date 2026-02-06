@@ -34,6 +34,16 @@ public class CommentaireServiceImpl implements CommentaireService{
     }
 
     @Override
+    public Commentaire modifierCommentaire(Commentaire commentaireEnvoye) {
+        Commentaire comEnBase = commentaireRepository.findById(commentaireEnvoye.getId())
+                .orElseThrow(() -> new RuntimeException("Commentaire introuvable"));
+        comEnBase.setCommentaire(commentaireEnvoye.getCommentaire());
+        comEnBase.setNote(commentaireEnvoye.getNote());
+        return commentaireRepository.save(comEnBase);
+    }
+
+
+    @Override
     public void supprimerCommentaire(Integer id) {
         commentaireRepository.deleteById(id);
     }

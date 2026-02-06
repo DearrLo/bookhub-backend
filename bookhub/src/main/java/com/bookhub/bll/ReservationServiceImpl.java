@@ -18,7 +18,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<Reservation> trouverParEmail(String email) {
-        return reservationRepository.findByUtilisateur_EmailOrderByDateDEmpruntDesc(email);
+        return reservationRepository.findByUtilisateur_EmailOrderByDateDeDemandeDesc(email);
     }
 
     @Override
