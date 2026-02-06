@@ -78,9 +78,24 @@ public class TestLivreService {
 
     @Test
     void test_modifier_livre() {
-        Livre livre = Livre.builder().id(1).titre("Titre Modifié").build();
-        livreService.modifier(livre);
-        verify(livreRepository).save(livre);
+        Livre livreExistant = Livre.builder()
+                .id(1)
+                .titre("Ancien Titre")
+                .auteur("Auteur")
+                .stock(10)
+                .build();
+
+        Livre livreModifie = Livre.builder()
+                .id(1)
+                .titre("Nouveau Titre")
+                .build();
+
+        when(livreRepository.findById(1)).thenReturn(Optional.of(livreExistant));
+        when(livreRepository.save(any(Livre.class))).thenAnswer(i -> i.getArguments()[0]);
+        Livre resultat = livreService.modifier(livreModifie);
+        assertThat(resultat.getTitre()).isEqualTo("Nouveau Titre");
+        assertThat(resultat.getAuteur()).isEqualTo("Auteur");
+        verify(livreRepository).save(any(Livre.class));
     }
 
     @Test
