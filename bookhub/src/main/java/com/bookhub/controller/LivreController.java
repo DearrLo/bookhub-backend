@@ -66,12 +66,12 @@ public class LivreController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/api/books/{id}")
     public ResponseEntity<?> miseAJourLivre(@Valid @RequestBody Livre livre) {
         try {
             if (livre == null || livre.getId() == null || livre.getId() <= 0) {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body("La livre et l'identifiant sont obligatoires");
+                        .body("Le livre et l'identifiant sont obligatoires");
             }
             livreService.modifier(livre);
             return ResponseEntity.ok(livre);

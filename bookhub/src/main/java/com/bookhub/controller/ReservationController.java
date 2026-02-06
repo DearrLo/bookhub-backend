@@ -19,7 +19,7 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @GetMapping("/my")
-    public ResponseEntity<List<Reservation>> getMyReservations() {
+    public ResponseEntity<List<Reservation>> listeReservationsparUtilisateur() {
 
         String emailConnecte = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Reservation> mesResas = reservationService.trouverParEmail(emailConnecte);
@@ -43,7 +43,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteResa(@PathVariable("id") String idInPath) {
+    public ResponseEntity<?> supprimerReservation(@PathVariable("id") String idInPath) {
         try {
             final int idResa = Integer.parseInt(idInPath);
             reservationService.supprimer(idResa);

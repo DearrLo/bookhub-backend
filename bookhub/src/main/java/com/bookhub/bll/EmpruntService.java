@@ -8,13 +8,10 @@ import java.util.List;
 public interface EmpruntService {
 
 
-    @Transactional
-    Emprunt demandeEmpruntLivre(Emprunt emprunt);
+    List<Emprunt> affficherEmpruntsActifs();
 
     @Transactional
-    void validerEmpruntLivre(Emprunt emprunt);
-
-    void RendreLivre(Emprunt emprunt);
+    Emprunt emprunterLivre(Emprunt emprunt);
 
     @Transactional
     void validerRetourLivre(Emprunt emprunt);

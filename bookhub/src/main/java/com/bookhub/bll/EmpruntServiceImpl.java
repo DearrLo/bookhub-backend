@@ -15,6 +15,11 @@ public class EmpruntServiceImpl implements EmpruntService {
 
     private EmpruntRepository empruntRepository;
 
+    @Override
+    public List<Emprunt> affficherEmpruntsActifs() {
+        return empruntRepository.findByStatutNot(StatutEmprunt.RENDU);
+    }
+
     private void validerEmprunt(Emprunt emprunt) {
         if (emprunt == null) throw new RuntimeException("L'emprunt est obligatoire");
         if (emprunt.getLivre() == null) throw new RuntimeException("Le livre est obligatoire");
@@ -30,34 +35,21 @@ public class EmpruntServiceImpl implements EmpruntService {
         if (emprunt.getLivre().getStock() <= 0) {
             throw new RuntimeException("Stock épuisé pour ce livre.");
         }
-
-        emprunt.setStatut(StatutEmprunt.EN_DEMANDE_EMPRUNT);
-        emprunt.setDateDEmprunt(LocalDateTime.now());
-        emprunt.setDateDeRetourAttendue(LocalDateTime.now().plusDays(14));
     }
 
     @Transactional
     @Override
-    public Emprunt demandeEmpruntLivre(Emprunt emprunt) {
+    public Emprunt emprunterLivre(Emprunt emprunt) {
         validerEmprunt(emprunt);
-        return empruntRepository.save(emprunt);
-    }
-
-    @Transactional
-    @Override
-    public void validerEmpruntLivre(Emprunt emprunt) {
         emprunt.setStatut(StatutEmprunt.EMPRUNTE);
         Livre livre = emprunt.getLivre();
         livre.setStock(livre.getStock() - 1);
-
-        empruntRepository.save(emprunt);
+        emprunt.setDateDEmprunt(LocalDateTime.now());
+        emprunt.setDateDeRetourAttendue(LocalDateTime.now().plusDays(14));
+        return empruntRepository.save(emprunt);
     }
 
-    @Override
-    public void RendreLivre(Emprunt emprunt) {
-        emprunt.setStatut(StatutEmprunt.EN_DEMANDE_RETOUR);
-        empruntRepository.save(emprunt);
-    }
+
 
     @Transactional
     @Override
