@@ -44,7 +44,7 @@ public class TestEmpruntService {
         Emprunt nouvelEmprunt = Emprunt.builder().utilisateur(lecteur).livre(livre).build();
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-            empruntService.demandeEmpruntLivre(nouvelEmprunt);
+            empruntService.emprunterLivre(nouvelEmprunt);
         });
 
         assertThat(ex.getMessage()).isEqualTo("Limite de 3 emprunts actifs atteinte.");
@@ -55,7 +55,7 @@ public class TestEmpruntService {
         Emprunt emprunt = Emprunt.builder().livre(livre).utilisateur(lecteur).build();
         int stockInitial = livre.getStock();
 
-        empruntService.validerEmpruntLivre(emprunt);
+        empruntService.emprunterLivre(emprunt);
 
         assertThat(emprunt.getStatut()).isEqualTo(StatutEmprunt.EMPRUNTE);
         assertThat(livre.getStock()).isEqualTo(stockInitial - 1);
@@ -64,8 +64,10 @@ public class TestEmpruntService {
 
     @Test
     void test_validerRetour_augmente_stock() {
-        Emprunt emprunt = Emprunt.builder().livre(livre).utilisateur(lecteur).build();
+        Emprunt emprunt = Emprunt.builder().id(10).livre(livre).utilisateur(lecteur).build();
         int stockAvantRetour = livre.getStock();
+
+        when(empruntRepository.findById(10)).thenReturn(java.util.Optional.of(emprunt));
 
         empruntService.validerRetourLivre(emprunt);
 
@@ -77,10 +79,13 @@ public class TestEmpruntService {
 
     @Test
     void test_RendreLivre() {
-        Emprunt emprunt = Emprunt.builder().build();
-        empruntService.RendreLivre(emprunt);
+        Emprunt emprunt = Emprunt.builder().id(1).livre(livre).build();
 
-        assertThat(emprunt.getStatut()).isEqualTo(StatutEmprunt.EN_DEMANDE_RETOUR);
+        when(empruntRepository.findById(1)).thenReturn(java.util.Optional.of(emprunt));
+
+        empruntService.validerRetourLivre(emprunt);
+
+        assertThat(emprunt.getStatut()).isEqualTo(StatutEmprunt.RENDU);
         verify(empruntRepository).save(emprunt);
     }
 
@@ -99,7 +104,7 @@ public class TestEmpruntService {
         Emprunt emprunt = Emprunt.builder().utilisateur(lecteur).livre(livreSansStock).build();
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-            empruntService.demandeEmpruntLivre(emprunt);
+            empruntService.emprunterLivre(emprunt);
         });
 
         assertThat(ex.getMessage()).isEqualTo("Stock épuisé pour ce livre.");

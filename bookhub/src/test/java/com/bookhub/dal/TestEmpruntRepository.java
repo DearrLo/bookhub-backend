@@ -72,7 +72,7 @@ public class TestEmpruntRepository {
                 .dateDeRetourEffective(dateFixe)
                 .utilisateur(utilisateurDB)
                 .livre(livreDB)
-                .statut(StatutEmprunt.EN_DEMANDE_EMPRUNT)
+                .statut(StatutEmprunt.EMPRUNTE)
                 .build();
 
         final Emprunt sauvegarde = empruntRepository.save(entiteEmprunt);
@@ -90,7 +90,7 @@ public class TestEmpruntRepository {
                 .dateDeRetourEffective(LocalDateTime.now())
                 .utilisateur(utilisateurDB)
                 .livre(livreDB)
-                .statut(StatutEmprunt.EN_DEMANDE_EMPRUNT)
+                .statut(StatutEmprunt.EMPRUNTE)
                 .build();
 
         assertThrows(ConstraintViolationException.class, () -> {
@@ -107,7 +107,7 @@ public class TestEmpruntRepository {
                 .dateDeRetourAttendue(LocalDateTime.now())
                 .dateDeRetourEffective(LocalDateTime.now())
                 .utilisateur(utilisateurDB)
-                .statut(StatutEmprunt.EN_DEMANDE_EMPRUNT)
+                .statut(StatutEmprunt.EMPRUNTE)
                 .livre(livreDB)
                 .build();
 
