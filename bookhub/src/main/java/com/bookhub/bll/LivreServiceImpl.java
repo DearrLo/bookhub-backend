@@ -47,6 +47,13 @@ public class LivreServiceImpl implements LivreService {
 	}
 
 	@Override
+	public List<Livre> rechercherLivres(String critere) {
+		return livreRepository.findByTitreContainingIgnoreCaseOrAuteurContainingIgnoreCaseOrIsbnContainingIgnoreCase(
+				critere, critere, critere
+		);
+	}
+
+	@Override
 	public List<Livre> chargerLivreParDisponibilite() {
 
 		// Un livre est disponible si stock > 0

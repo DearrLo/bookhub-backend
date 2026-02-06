@@ -13,7 +13,9 @@ public interface LivreService {
 	void supprimer(Integer id);
 	
 	List<Livre> chargerLivreParCategorie (Integer idCategorie);
-	
-	// Retourne livre dispo si stock > 0
+
+    List<Livre> rechercherLivres(String critere);
+
+    // Retourne livre dispo si stock > 0
 	List<Livre> chargerLivreParDisponibilite();
 }
