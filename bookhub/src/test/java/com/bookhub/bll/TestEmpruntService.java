@@ -10,9 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
+
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -23,13 +27,18 @@ public class TestEmpruntService {
     @Mock
     private EmpruntRepository empruntRepository;
 
+    @Mock
+    private MessageSource messageSource;
+
     private Utilisateur lecteur;
     private Livre livre;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        empruntService = new EmpruntServiceImpl(empruntRepository);
+        when(messageSource.getMessage(anyString(), any(), any(Locale.class))).thenReturn("message test");
+
+        empruntService = new EmpruntServiceImpl(empruntRepository, messageSource);
 
         lecteur = Utilisateur.builder().email("lecteur@test.fr").build();
         livre = Livre.builder().id(1).stock(5).build();
@@ -40,6 +49,9 @@ public class TestEmpruntService {
         // Simule déjà 3 emprunts en cours
         when(empruntRepository.countByUtilisateur_EmailAndDateDeRetourEffectiveIsNull(lecteur.getEmail()))
                 .thenReturn(3L);
+
+        when(messageSource.getMessage(eq("loan.limit.reached"), any(), any(Locale.class)))
+                .thenReturn("Limite de 3 emprunts actifs atteinte.");
 
         Emprunt nouvelEmprunt = Emprunt.builder().utilisateur(lecteur).livre(livre).build();
 
@@ -102,6 +114,9 @@ public class TestEmpruntService {
     void test_validerEmprunt_stock_epuise() {
         Livre livreSansStock = Livre.builder().stock(0).build();
         Emprunt emprunt = Emprunt.builder().utilisateur(lecteur).livre(livreSansStock).build();
+
+        when(messageSource.getMessage(eq("loan.not.available"), any(), any(Locale.class)))
+                .thenReturn("Stock épuisé pour ce livre.");
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> {
             empruntService.emprunterLivre(emprunt);

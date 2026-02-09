@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
-    Optional<Reservation> findByLivreIdAndUtilisateurEmail(Integer idLivre, String emailUtilisateur);
+	Optional<Reservation> findByLivre_IdAndUtilisateur_Email(Integer idLivre, String emailUtilisateur);
 
     List<Reservation> findByUtilisateur_EmailOrderByDateDeDemandeDesc(String email);
 
