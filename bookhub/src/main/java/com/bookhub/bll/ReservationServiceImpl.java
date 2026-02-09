@@ -43,7 +43,9 @@ public class ReservationServiceImpl implements ReservationService {
         if (lecteur == null) {
             throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
         }
-
+        if (reservation.getLivre().getStock() > 0) {
+            throw new RuntimeException(messageSource.getMessage("reservation.book.available", null, Locale.getDefault()));
+        }
         long nbReservationsActives = reservationRepository.countByUtilisateur_EmailAndStatutNot(
                 lecteur.getEmail(),
                 StatutResa.ANNULEE

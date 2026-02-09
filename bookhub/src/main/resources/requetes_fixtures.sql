@@ -77,7 +77,7 @@ VALUES (1, GETDATE(), 'EN_ATTENTE', 'jeannot31@email.com'),
        (10, GETDATE(), 'EN_ATTENTE', 'jeannot31@email.com');
 
 INSERT INTO bookhub_loan(book_id, date_to_return, returned_date, loan_date, loan_status, user_id)
-VALUES (3, GETDATE() + 14, null, GETDATE(), 'EMPRUNTE', 'c'),
+VALUES (3, GETDATE() + 14, null, GETDATE(), 'EMPRUNTE', 'jeannot31@email.com'),
        (7, GETDATE() + 14, null, GETDATE(), 'EMPRUNTE', 'jeannot31@email.com'),
        (8, GETDATE(), GETDATE(), GETDATE() - 14, 'RENDU', 'jeannot31@email.com');
 
