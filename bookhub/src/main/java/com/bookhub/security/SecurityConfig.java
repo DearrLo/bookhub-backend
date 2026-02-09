@@ -5,34 +5,47 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-        http
-            // API rest (aucune session http, ne garde aucun etat user)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .csrf(csrf -> csrf.disable())
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-            .authorizeHttpRequests(auth -> auth
-                // endpoints publics (via auth)
-                .requestMatchers("/api/auth/**").permitAll()
+		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.csrf(csrf -> csrf.disable())
+			.authorizeHttpRequests(auth -> auth	.requestMatchers("/api/auth/**")
+												.permitAll()
+												.anyRequest()
+												.authenticated())
+			.formLogin(form -> form.disable())
+			.httpBasic(basic -> basic.disable())
 
-                // le reste -> protégé
-                .anyRequest().authenticated()
-            )
+			// filtre JWT
+			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-            // pas de comportement dans le navigateur
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable());
-            
-        // TODO config JWT (filtre, valider token et l'injecter, gérer rôles...)
+		return http.build();
+	}
 
-        return http.build();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+	    return config.getAuthenticationManager();
+	}
 }
