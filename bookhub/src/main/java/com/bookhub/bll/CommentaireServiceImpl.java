@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Service
 @AllArgsConstructor
 public class CommentaireServiceImpl implements CommentaireService{
+    public static final int NOTE_MIN = 0;
+    public static final int NOTE_MAX = 5;
 
     private CommentaireRepository commentaireRepository;
 
@@ -18,7 +20,7 @@ public class CommentaireServiceImpl implements CommentaireService{
         if (commentaire.getLivre() == null) throw new RuntimeException("Le livre est obligatoire");
         if (commentaire.getUtilisateur() == null) throw new RuntimeException("Le lecteur est obligatoire");
         if (commentaire.getNote() == null) throw new RuntimeException("La note est obligatoire");
-        if (commentaire.getNote() < 0 || commentaire.getNote() > 5 ) throw new RuntimeException("La note doit être comprise entre 0 et 5");
+        if (commentaire.getNote() < NOTE_MIN || commentaire.getNote() > NOTE_MAX ) throw new RuntimeException("La note doit être comprise entre " + NOTE_MIN + " et " + NOTE_MAX);
         commentaire.setDateDeCreation(LocalDateTime.now());
 
     }

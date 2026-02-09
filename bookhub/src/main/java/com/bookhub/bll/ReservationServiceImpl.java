@@ -14,6 +14,7 @@ import java.util.List;
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
+    public static final int LIMITE_MAX_RESERVATIONS = 5;
     private ReservationRepository reservationRepository;
 
     @Override
@@ -40,8 +41,8 @@ public class ReservationServiceImpl implements ReservationService {
                 lecteur.getEmail(),
                 StatutResa.ANNULEE
         );
-        if (nbReservationsActives >= 5) {
-            throw new RuntimeException("Limite de 5 réservations actives atteinte.");
+        if (nbReservationsActives >= LIMITE_MAX_RESERVATIONS) {
+            throw new RuntimeException("Limite de " + LIMITE_MAX_RESERVATIONS + " réservations actives atteinte.");
         }
         reservation.setStatut(StatutResa.EN_ATTENTE);
         reservation.setDateDeDemande(LocalDateTime.now());
