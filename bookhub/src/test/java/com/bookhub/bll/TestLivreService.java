@@ -1,5 +1,6 @@
 package com.bookhub.bll;
 
+import com.bookhub.bo.Categorie;
 import com.bookhub.bo.Livre;
 import com.bookhub.dal.LivreRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -64,16 +66,26 @@ public class TestLivreService {
 
     @Test
     void test_ajouter_livre_Success() {
+        Categorie categorie = Categorie.builder().libelle("Fiction").build();
+
         Livre nouveauLivre = Livre.builder()
-                .titre("Le Grimoire de Spring")
-                .auteur("Soléna")
+                .isbn("UNIQUE-ISBN-123")
+                .titre("Titre valide")
+                .auteur("Auteur valide")
                 .stock(10)
+                .categorie(categorie)
                 .build();
-        when(livreRepository.save(any(Livre.class))).thenReturn(nouveauLivre);
-        Livre resultat = livreService.ajouter(nouveauLivre);
-        assertThat(resultat).isNotNull();
-        assertThat(resultat.getTitre()).isEqualTo("Le Grimoire de Spring");
-        verify(livreRepository, times(1)).save(nouveauLivre);
+
+        when(livreRepository.save(any(Livre.class))).thenAnswer(invocation -> {
+            Livre l = invocation.getArgument(0);
+            l.setId(1);
+            return l;
+        });
+
+        Livre sauve = livreService.ajouter(nouveauLivre);
+
+        assertNotNull(sauve);
+        assertThat(sauve.getId()).isEqualTo(1);
     }
 
     @Test
