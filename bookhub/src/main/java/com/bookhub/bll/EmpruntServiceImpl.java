@@ -3,17 +3,20 @@ package com.bookhub.bll;
 import com.bookhub.bo.*;
 import com.bookhub.dal.EmpruntRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
 public class EmpruntServiceImpl implements EmpruntService {
 
     private EmpruntRepository empruntRepository;
+    private MessageSource messageSource;
 
     public static final int DUREE_EMPRUNT_JOURS = 14;
     public static final int LIMITE_MAX_EMPRUNTS = 3;
@@ -24,19 +27,19 @@ public class EmpruntServiceImpl implements EmpruntService {
     }
 
     private void validerEmprunt(Emprunt emprunt) {
-        if (emprunt == null) throw new RuntimeException("L'emprunt est obligatoire");
-        if (emprunt.getLivre() == null) throw new RuntimeException("Le livre est obligatoire");
+        if (emprunt == null) throw new RuntimeException(messageSource.getMessage("loan.required", null, Locale.getDefault()));
+        if (emprunt.getLivre() == null) throw new RuntimeException(messageSource.getMessage("book.required", null, Locale.getDefault()));
 
         Utilisateur lecteur = emprunt.getUtilisateur();
-        if (lecteur == null) throw new RuntimeException("Le lecteur est obligatoire");
+        if (lecteur == null) throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
 
         long nbEmpruntsActifs = empruntRepository.countByUtilisateur_EmailAndDateDeRetourEffectiveIsNull(lecteur.getEmail());
         if (nbEmpruntsActifs >= LIMITE_MAX_EMPRUNTS) {
-            throw new RuntimeException("Limite de " + LIMITE_MAX_EMPRUNTS + " emprunts actifs atteinte.");
+            throw new RuntimeException(messageSource.getMessage("loan.limit.reached", null, Locale.getDefault()));
         }
 
         if (emprunt.getLivre().getStock() <= 0) {
-            throw new RuntimeException("Stock épuisé pour ce livre.");
+            throw new RuntimeException(messageSource.getMessage("loan.not.available", null, Locale.getDefault()));
         }
     }
 
@@ -52,13 +55,11 @@ public class EmpruntServiceImpl implements EmpruntService {
         return empruntRepository.save(emprunt);
     }
 
-
-
     @Transactional
     @Override
     public void validerRetourLivre(Emprunt emprunt) {
         Emprunt empruntEnBase = empruntRepository.findById(emprunt.getId())
-                        .orElseThrow(() -> new RuntimeException("Emprunt introuvable"));
+                .orElseThrow(() -> new RuntimeException(messageSource.getMessage("loan.not.found", null, Locale.getDefault())));
         empruntEnBase.setStatut(StatutEmprunt.RENDU);
         empruntEnBase.setDateDeRetourEffective(LocalDateTime.now());
         Livre livre = empruntEnBase.getLivre();

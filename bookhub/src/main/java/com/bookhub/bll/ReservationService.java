@@ -11,8 +11,6 @@ public interface ReservationService {
 
     void supprimer(Integer id);
 
-    void validerReservation(Reservation reservation);
-
     Reservation reserverLivre(Reservation reservation);
 
     Reservation mettreAJourStatut(Integer idReservation, StatutResa nouveauStatut);
