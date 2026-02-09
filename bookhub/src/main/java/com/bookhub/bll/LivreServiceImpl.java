@@ -1,5 +1,6 @@
 package com.bookhub.bll;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -26,10 +27,40 @@ public class LivreServiceImpl implements LivreService {
 								.orElse(null);
 	}
 
+	public void validerLivre(Livre livre){
+		if (livre == null) {
+			throw new RuntimeException("Le livre est obligatoire");
+		}
+		if (livre.getIsbn() == null) {
+			throw new RuntimeException("L'ISBN est obligatoire");
+		}
+		if (livreRepository.existsByIsbn(livre.getIsbn())) {
+			throw new RuntimeException("Un livre avec l'ISBN " + livre.getIsbn() + " existe déjà.");
+		}
+		if (livre.getCategorie() == null) {
+			throw new RuntimeException("La categorie est obligatoire");
+		}
+		if (livre.getAuteur() == null) {
+			throw new RuntimeException("L'auteur est obligatoire");
+		}
+		if (livre.getTitre() == null) {
+			throw new RuntimeException("Le titre est obligatoire");
+		}
+		if (livre.getStock() == null) {
+			throw new RuntimeException("Le stock est obligatoire");
+		}
+	}
+
 	@Override
 	public Livre ajouter(Livre livre) {
-		return livreRepository.save(livre);
-	}
+		validerLivre(livre);
+		livre.setDateDeCreation(LocalDateTime.now());
+        try {
+            return livreRepository.save(livre);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Impossible de sauver - " + livre.toString());
+        }
+    }
 
 	@Override
 	public Livre modifier(Livre livreEnvoye) {

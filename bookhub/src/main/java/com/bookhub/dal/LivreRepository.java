@@ -10,6 +10,7 @@ public interface LivreRepository extends JpaRepository<Livre, Integer> {
     List<Livre> findByTitreContainingIgnoreCase(String titre);
     List<Livre> findByAuteurContainingIgnoreCase(String auteur);
     List<Livre> findByIsbnContainingIgnoreCase(String isbn);
+    boolean existsByIsbn(String isbn);
 
     List<Livre> findByTitreContainingIgnoreCaseOrAuteurContainingIgnoreCaseOrIsbnContainingIgnoreCase(
             String titre,

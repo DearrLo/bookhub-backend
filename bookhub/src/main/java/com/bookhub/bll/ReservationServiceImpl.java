@@ -26,7 +26,8 @@ public class ReservationServiceImpl implements ReservationService {
     public void supprimer(Integer id) {
         reservationRepository.deleteById(id);
     }
-    private void validerReservation(Reservation reservation) {
+
+    public void validerReservation(Reservation reservation) {
         if (reservation == null) {
             throw new RuntimeException("La réservation est obligatoire");
         }

@@ -14,6 +14,7 @@ import java.util.List;
 public class EmpruntServiceImpl implements EmpruntService {
 
     private EmpruntRepository empruntRepository;
+
     public static final int DUREE_EMPRUNT_JOURS = 14;
     public static final int LIMITE_MAX_EMPRUNTS = 3;
 
@@ -31,7 +32,7 @@ public class EmpruntServiceImpl implements EmpruntService {
 
         long nbEmpruntsActifs = empruntRepository.countByUtilisateur_EmailAndDateDeRetourEffectiveIsNull(lecteur.getEmail());
         if (nbEmpruntsActifs >= LIMITE_MAX_EMPRUNTS) {
-            throw new RuntimeException("Limite de 3 emprunts actifs atteinte.");
+            throw new RuntimeException("Limite de " + LIMITE_MAX_EMPRUNTS + " emprunts actifs atteinte.");
         }
 
         if (emprunt.getLivre().getStock() <= 0) {
