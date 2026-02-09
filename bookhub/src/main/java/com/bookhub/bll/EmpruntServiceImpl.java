@@ -5,6 +5,7 @@ import com.bookhub.bo.Livre;
 import com.bookhub.bo.StatutEmprunt;
 import com.bookhub.bo.Utilisateur;
 import com.bookhub.dal.EmpruntRepository;
+import com.bookhub.dal.LivreRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Locale;
 public class EmpruntServiceImpl implements EmpruntService {
 
     private EmpruntRepository empruntRepository;
+    private LivreRepository livreRepository;
     private MessageSource messageSource;
 
     public static final int DUREE_EMPRUNT_JOURS = 14;
@@ -49,12 +51,19 @@ public class EmpruntServiceImpl implements EmpruntService {
     @Transactional
     @Override
     public Emprunt emprunterLivre(Emprunt emprunt) {
+        Livre livreBdd = livreRepository.findById(emprunt.getLivre().getId())
+                .orElseThrow(() -> new RuntimeException("Livre introuvable"));
+
+        emprunt.setLivre(livreBdd);
+
         validerEmprunt(emprunt);
+
         emprunt.setStatut(StatutEmprunt.EMPRUNTE);
-        Livre livre = emprunt.getLivre();
-        livre.setStock(livre.getStock() - 1);
         emprunt.setDateDEmprunt(LocalDateTime.now());
         emprunt.setDateDeRetourAttendue(LocalDateTime.now().plusDays(DUREE_EMPRUNT_JOURS));
+
+        livreBdd.setStock(livreBdd.getStock() - 1);
+
         return empruntRepository.save(emprunt);
     }
 

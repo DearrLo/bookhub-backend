@@ -1,8 +1,10 @@
 package com.bookhub.bll;
 
+import com.bookhub.bo.Livre;
 import com.bookhub.bo.Reservation;
 import com.bookhub.bo.StatutResa;
 import com.bookhub.bo.Utilisateur;
+import com.bookhub.dal.LivreRepository;
 import com.bookhub.dal.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -19,6 +21,7 @@ public class ReservationServiceImpl implements ReservationService {
     public static final int LIMITE_MAX_RESERVATIONS = 5;
 
     private ReservationRepository reservationRepository;
+    private LivreRepository livreRepository;
     private MessageSource messageSource;
 
     @Override
@@ -61,7 +64,16 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Reservation reserverLivre(Reservation reservation) {
+        Livre livreBdd = livreRepository.findById(reservation.getLivre().getId())
+                .orElseThrow(() -> new RuntimeException("Livre introuvable"));
+
+        reservation.setLivre(livreBdd);
+
+        reservation.setDateDeDemande(LocalDateTime.now());
+        reservation.setStatut(StatutResa.EN_ATTENTE);
+
         validerReservation(reservation);
+
         try {
             return reservationRepository.save(reservation);
         } catch (RuntimeException e) {
