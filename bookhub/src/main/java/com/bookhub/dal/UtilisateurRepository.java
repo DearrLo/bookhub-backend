@@ -1,10 +1,9 @@
 package com.bookhub.dal;
 
-import java.util.Optional;
-
+import com.bookhub.bo.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.bookhub.bo.Utilisateur;
+import java.util.Optional;
 
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, String> {
 	boolean existsByEmail(String email);

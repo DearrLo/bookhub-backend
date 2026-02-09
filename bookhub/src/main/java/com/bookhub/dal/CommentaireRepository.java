@@ -1,7 +1,6 @@
 package com.bookhub.dal;
 
 import com.bookhub.bo.Commentaire;
-import com.bookhub.bo.Emprunt;
 import com.bookhub.bo.Livre;
 import com.bookhub.bo.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,7 +2,6 @@ package com.bookhub.dal;
 
 import com.bookhub.bo.Reservation;
 import com.bookhub.bo.StatutResa;
-import com.bookhub.bo.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

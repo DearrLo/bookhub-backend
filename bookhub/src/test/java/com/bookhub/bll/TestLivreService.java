@@ -8,9 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,10 +27,16 @@ public class TestLivreService {
     @Mock
     private LivreRepository livreRepository;
 
+    @Mock
+    private MessageSource messageSource;
+
+
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        livreService = new LivreServiceImpl(livreRepository);
+        livreService = new LivreServiceImpl(livreRepository, messageSource);
+        when(messageSource.getMessage(anyString(), any(), any(Locale.class))).thenReturn("message test");
+        livreService = new LivreServiceImpl(livreRepository, messageSource);
     }
 
     @Test

@@ -1,6 +1,8 @@
 package com.bookhub.dal;
 
-import com.bookhub.bo.*;
+import com.bookhub.bo.Emprunt;
+import com.bookhub.bo.StatutEmprunt;
+import com.bookhub.bo.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

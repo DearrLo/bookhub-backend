@@ -1,17 +1,15 @@
 package com.bookhub.security;
 
-import java.util.List;
-
+import com.bookhub.bo.Utilisateur;
+import com.bookhub.dal.UtilisateurRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.bookhub.bo.Utilisateur;
-import com.bookhub.dal.UtilisateurRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor

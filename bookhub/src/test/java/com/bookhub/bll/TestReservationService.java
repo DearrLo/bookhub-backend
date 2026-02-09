@@ -1,18 +1,10 @@
 package com.bookhub.bll;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Locale;
-import java.util.Optional;
-
+import com.bookhub.bo.Livre;
+import com.bookhub.bo.Reservation;
+import com.bookhub.bo.StatutResa;
+import com.bookhub.bo.Utilisateur;
+import com.bookhub.dal.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -20,11 +12,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 
-import com.bookhub.bo.Livre;
-import com.bookhub.bo.Reservation;
-import com.bookhub.bo.StatutResa;
-import com.bookhub.bo.Utilisateur;
-import com.bookhub.dal.ReservationRepository;
+import java.util.Locale;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class TestReservationService {
@@ -54,6 +49,7 @@ public class TestReservationService {
 
         livreTest = Livre.builder()
                 .id(1)
+                .stock(0)
                 .titre("Apprendre Spring Boot")
                 .build();
     }

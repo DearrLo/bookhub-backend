@@ -1,12 +1,10 @@
 package com.bookhub.bll;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.bookhub.bo.Utilisateur;
 import com.bookhub.dal.UtilisateurRepository;
-
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service

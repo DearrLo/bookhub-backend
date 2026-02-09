@@ -1,27 +1,32 @@
 package com.bookhub.bll;
 
-import com.bookhub.bo.*;
+import com.bookhub.bo.Commentaire;
 import com.bookhub.dal.CommentaireRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
-public class CommentaireServiceImpl implements CommentaireService{
+public class CommentaireServiceImpl implements CommentaireService {
 
     public static final int NOTE_MIN = 0;
     public static final int NOTE_MAX = 5;
 
     private CommentaireRepository commentaireRepository;
+    private MessageSource messageSource;
 
     private void validerCommentaire(Commentaire commentaire) {
-        if (commentaire == null) throw new RuntimeException("Le commentaire est obligatoire");
-        if (commentaire.getLivre() == null) throw new RuntimeException("Le livre est obligatoire");
-        if (commentaire.getUtilisateur() == null) throw new RuntimeException("Le lecteur est obligatoire");
-        if (commentaire.getNote() == null) throw new RuntimeException("La note est obligatoire");
-        if (commentaire.getNote() < NOTE_MIN || commentaire.getNote() > NOTE_MAX ) throw new RuntimeException("La note doit être comprise entre " + NOTE_MIN + " et " + NOTE_MAX);
+        if (commentaire == null) throw new RuntimeException(messageSource.getMessage("review.required", null, Locale.getDefault()));
+        if (commentaire.getLivre() == null) throw new RuntimeException(messageSource.getMessage("book.required", null, Locale.getDefault()));
+        if (commentaire.getUtilisateur() == null) throw new RuntimeException(messageSource.getMessage("bookhub_user.required", null, Locale.getDefault()));
+        if (commentaire.getNote() == null) throw new RuntimeException(messageSource.getMessage("validation.required", null, Locale.getDefault()));
+        if (commentaire.getNote() < NOTE_MIN || commentaire.getNote() > NOTE_MAX)
+            throw new RuntimeException(messageSource.getMessage("review.correct.note", null, Locale.getDefault()));
         commentaire.setDateDeCreation(LocalDateTime.now());
 
     }
@@ -36,6 +41,7 @@ public class CommentaireServiceImpl implements CommentaireService{
         }
     }
 
+    @Transactional
     @Override
     public Commentaire modifierCommentaire(Commentaire commentaireEnvoye) {
         Commentaire comEnBase = commentaireRepository.findById(commentaireEnvoye.getId())

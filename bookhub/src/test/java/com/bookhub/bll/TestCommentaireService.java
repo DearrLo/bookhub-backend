@@ -6,9 +6,12 @@ import com.bookhub.bo.Utilisateur;
 import com.bookhub.dal.CommentaireRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,9 +21,13 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class TestCommentaireService {
 
+    @Autowired
     private CommentaireService commentaireService;
 
-    @Mock
+    @Autowired
+    private MessageSource messageSource;
+
+    @MockitoBean
     private CommentaireRepository commentaireRepository;
 
     private Utilisateur utilisateurTest;
@@ -28,9 +35,6 @@ public class TestCommentaireService {
 
     @BeforeEach
     void init() {
-        MockitoAnnotations.openMocks(this);
-        commentaireService = new CommentaireServiceImpl(commentaireRepository);
-
         utilisateurTest = Utilisateur.builder().email("test@eni.fr").build();
         livreTest = Livre.builder().id(1).titre("Livre Test").build();
     }
@@ -66,7 +70,8 @@ public class TestCommentaireService {
             commentaireService.laisserCommentaire(com);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("La note doit être comprise entre 0 et 5");
+        String messageAttendu = messageSource.getMessage("review.correct.note", null, Locale.getDefault());
+        assertThat(exception.getMessage()).isEqualTo(messageAttendu);
         verify(commentaireRepository, never()).save(any());
     }
 
