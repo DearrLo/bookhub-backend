@@ -67,9 +67,9 @@ VALUES ('9782070408504', 'Le Petit Prince', 'Antoine de Saint-Exupéry', 1, 10,
         'https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg', GETDATE());
 
 INSERT INTO bookhub_user(ROLE, NAME, PSEUDONYM, SURNAME, EMAIL, PASSWORD)
-VALUES ('lecteur', 'Jean', 'jeannot31', 'André', 'jeannot31@email.com', 'Pompompom1!'),
-       ('admin', 'Nour', 'nourette', 'Martin', 'nour567@email.com', 'Pompompom2!'),
-       ('bibliothecaire', 'Soléna', 'soso', 'Toussaint', 'solena@email.com', 'Pompompom3!');
+VALUES ('USER', 'Jean', 'jeannot31', 'André', 'jeannot31@email.com', 'Pompompom1!'),
+       ('ADMIN', 'Nour', 'nourette', 'Martin', 'nour567@email.com', 'Pompompom2!'),
+       ('LIBRARIAN', 'Soléna', 'soso', 'Toussaint', 'solena@email.com', 'Pompompom3!');
 
 INSERT INTO reservation(BOOK_ID, REQUEST_DATE, RESERVATION_STATUS, USER_ID)
 VALUES (1, GETDATE(), 'EN_ATTENTE', 'jeannot31@email.com'),
