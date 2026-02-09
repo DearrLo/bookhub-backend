@@ -22,7 +22,7 @@ VALUES ('Jeunesse'),
        ('Science-Fiction');
 
 INSERT INTO book (isbn, title, author, category_id, stock, summary, cover_image_url, created_at)
-VALUES ('9782070408504', 'Le Petit Prince', 'Antoine de Saint-Exupéry', 1, 10,
+VALUES ('9782070408504', 'Le Petit Prince', 'Antoine de Saint-Exupéry', 1, 0,
         'Un aviateur tombe dans le désert et rencontre un petit garçon venu d''une autre planète.',
         'https://covers.openlibrary.org/b/isbn/9780156012195-L.jpg', GETDATE()),
 

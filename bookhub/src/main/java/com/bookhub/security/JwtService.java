@@ -6,11 +6,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -24,12 +28,22 @@ public class JwtService {
 
 	// génère JWT
 	public String generateToken(UserDetails userDetails) {
+		Map<String, Object> extraClaims = new HashMap<>();
+
+		extraClaims.put("roles", userDetails.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toList()));
+
 		Date now = new Date();
 		Date expiry = new Date(now.getTime() + expirationMs);
-		return Jwts.builder().setSubject(userDetails.getUsername())
-				.setIssuedAt(now) 
+
+		return Jwts.builder()
+				.setClaims(extraClaims) // On injecte les rôles ici
+				.setSubject(userDetails.getUsername())
+				.setIssuedAt(now)
 				.setExpiration(expiry)
-				.signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
+				.signWith(getSigningKey(), SignatureAlgorithm.HS256)
+				.compact();
 	}
 
 	// récupère l’email depuis le token
