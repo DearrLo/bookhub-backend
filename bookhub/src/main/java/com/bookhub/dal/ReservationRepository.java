@@ -15,6 +15,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
     // Compte les réservations actives (EN_ATTENTE ou DISPO) pour un utilisateur
     long countByUtilisateur_EmailAndStatutNot(String email, StatutResa statut);
-
-
+    
+    // File d'attente
+    List<Reservation> findByLivre_IdAndStatutOrderByDateDeDemandeAsc(Integer livreId, StatutResa statut);
 }
