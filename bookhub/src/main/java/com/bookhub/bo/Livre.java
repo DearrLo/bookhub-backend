@@ -1,9 +1,11 @@
 package com.bookhub.bo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -43,4 +45,8 @@ public class Livre {
 
 	@Column(name = "CREATED_AT")
 	private LocalDateTime dateDeCreation;
+
+	@OneToMany(mappedBy = "livre", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("livre")
+	private List<Commentaire> commentaires;
 }

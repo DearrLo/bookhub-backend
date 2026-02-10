@@ -57,7 +57,7 @@ public class SecurityConfig {
                 // Attention : ton controller est @RequestMapping("/api")
                 // et tes routes sont /api/books/{id}/ratings et /api/ratings/{id}
                 .requestMatchers(HttpMethod.POST, "/api/books/*/ratings").hasRole("USER")
-                .requestMatchers(HttpMethod.PUT, "/api/ratings/**").hasRole("USER")
+                .requestMatchers(HttpMethod.PUT, "/api/ratings/*").hasRole("USER")
                 .requestMatchers(HttpMethod.DELETE, "/api/ratings/**").hasRole("LIBRARIAN")
 
                 // ========== DEFAULT ==========

@@ -28,14 +28,14 @@ public class CommentaireController {
     }
 
     @PutMapping("/ratings/{id}")
-    public ResponseEntity<?> miseAJourCommentaire(@Valid @RequestBody Commentaire commentaire) {
+    public ResponseEntity<?> miseAJourCommentaire(@RequestBody Commentaire commentaire) {
         try {
             if (commentaire == null || commentaire.getId() == null || commentaire.getId() <= 0) {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                         .body("Le commentaire et l'identifiant sont obligatoires");
             }
-            commentaireService.modifierCommentaire(commentaire);
-            return ResponseEntity.ok(commentaire);
+            Commentaire commentaireMisAJour = commentaireService.modifierCommentaire(commentaire);
+            return ResponseEntity.ok(commentaireMisAJour);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
