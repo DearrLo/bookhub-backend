@@ -10,18 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//• GET /api/books
-//• GET /api/books/{id}
-//• POST /api/books (LIBRARIAN)
-//• PUT /api/books/{id} (LIBRARIAN)
-//• DELETE /api/books/{id} (ADMIN)
-
-
-//• GET /api/books/search
-
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/books")
 public class LivreController {
 
