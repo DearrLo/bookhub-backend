@@ -1,9 +1,6 @@
 package com.bookhub.bll;
 
-import com.bookhub.bo.Emprunt;
-import com.bookhub.bo.Livre;
-import com.bookhub.bo.StatutEmprunt;
-import com.bookhub.bo.Utilisateur;
+import com.bookhub.bo.*;
 import com.bookhub.dal.EmpruntRepository;
 import com.bookhub.dal.LivreRepository;
 import lombok.AllArgsConstructor;
@@ -31,6 +28,8 @@ public class EmpruntServiceImpl implements EmpruntService {
         return empruntRepository.findByStatutNot(StatutEmprunt.RENDU);
     }
 
+    private List<Emprunt> recupererListeEmpruntsEnRetard(Utilisateur utilisateur){ return empruntRepository.findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(utilisateur, LocalDateTime.now());};
+
     private void validerEmprunt(Emprunt emprunt) {
         if (emprunt == null) throw new RuntimeException(messageSource.getMessage("loan.required", null, Locale.getDefault()));
         if (emprunt.getLivre() == null) throw new RuntimeException(messageSource.getMessage("book.required", null, Locale.getDefault()));
@@ -38,14 +37,18 @@ public class EmpruntServiceImpl implements EmpruntService {
         Utilisateur lecteur = emprunt.getUtilisateur();
         if (lecteur == null) throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
 
+        if (!recupererListeEmpruntsEnRetard(lecteur).isEmpty()){
+            throw new RuntimeException(messageSource.getMessage("loan.impossible.late", null, Locale.getDefault()));
+        }
+
         long nbEmpruntsActifs = empruntRepository.countByUtilisateur_EmailAndDateDeRetourEffectiveIsNull(lecteur.getEmail());
         if (nbEmpruntsActifs >= LIMITE_MAX_EMPRUNTS) {
             throw new RuntimeException(messageSource.getMessage("loan.limit.reached", null, Locale.getDefault()));
         }
-
         if (emprunt.getLivre().getStock() <= 0) {
             throw new RuntimeException(messageSource.getMessage("loan.not.available", null, Locale.getDefault()));
         }
+
     }
 
     @Transactional
