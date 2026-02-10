@@ -25,49 +25,47 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .csrf(csrf -> csrf.disable())
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())
 
-            .authorizeHttpRequests(auth -> auth
-                // Publiques
-                .requestMatchers("/api/auth/**").permitAll()
+                .authorizeHttpRequests(auth -> auth
 
-                // Livres
-                .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/books").hasRole("LIBRARIAN")
-                .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("LIBRARIAN")
-                .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
+                        // Publiques
+                        .requestMatchers("/api/auth/**").permitAll()
 
-                // Emprunts
-                .requestMatchers(HttpMethod.GET, "/api/loans").hasRole("LIBRARIAN")
-                // GET /api/loans/my = mes emprunts (user)
-                .requestMatchers(HttpMethod.GET, "/api/loans/my").hasRole("USER")
-                // POST /api/loans = emprunter (user)
-                .requestMatchers(HttpMethod.POST, "/api/loans").hasRole("USER")
-                // PUT /api/loans/{id}/return = valider retour (bibliothécaire)
-                .requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasRole("LIBRARIAN")
+                        // Livres
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/books").hasRole("LIBRARIAN")
+                        .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("LIBRARIAN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
 
-                // ========== RESERVATIONS ==========
-                .requestMatchers(HttpMethod.GET, "/api/reservations/my").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/api/reservations").hasRole("USER")
-                .requestMatchers(HttpMethod.DELETE, "/api/reservations/**").hasRole("USER")
+                        // Emprunts
+                        .requestMatchers(HttpMethod.GET, "/api/loans").hasRole("LIBRARIAN")
 
-                // ========== RATINGS / COMMENTS ==========
-                // Attention : ton controller est @RequestMapping("/api")
-                // et tes routes sont /api/books/{id}/ratings et /api/ratings/{id}
-                .requestMatchers(HttpMethod.POST, "/api/books/*/ratings").hasRole("USER")
-                .requestMatchers(HttpMethod.PUT, "/api/ratings/*").hasRole("USER")
-                .requestMatchers(HttpMethod.DELETE, "/api/ratings/**").hasRole("LIBRARIAN")
+                        /// api/loans/my = mes emprunts / get (user)
+                        .requestMatchers(HttpMethod.GET, "/api/loans/my").hasRole("USER")
 
-                // ========== DEFAULT ==========
-                .anyRequest().authenticated()
-            )
+                        /// api/loans = emprunter / post (user)
+                        .requestMatchers(HttpMethod.POST, "/api/loans").hasRole("USER")
 
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable())
+                        /// api/loans/{id}/return = valider retour / put (bibliothécaire)
+                        .requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasRole("LIBRARIAN")
 
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        // Réservations
+                        .requestMatchers(HttpMethod.GET, "/api/reservations/my").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/reservations").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/reservations/**").hasRole("USER")
+
+                        // Commentaires
+                        .requestMatchers(HttpMethod.POST, "/api/books/*/ratings").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/ratings/*").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/ratings/**").hasRole("LIBRARIAN")
+
+                        .anyRequest().authenticated())
+
+                .formLogin(form -> form.disable()).httpBasic(basic -> basic.disable())
+
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
