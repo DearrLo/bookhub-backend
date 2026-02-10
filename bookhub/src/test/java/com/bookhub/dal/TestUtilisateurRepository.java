@@ -25,8 +25,9 @@ public class TestUtilisateurRepository {
                 .email("test@bookhub.fr")
                 .nom("Dupont")
                 .prenom("Jean")
-                .motDePasse("P@ssword123")
-                .role("LECTEUR")
+                .pseudo("boby")
+                .motDePasse("P@ssword12345678")
+                .role("USER")
                 .build();
 
         Utilisateur sauvegarde = utilisateurRepository.save(utilisateur);
@@ -42,8 +43,9 @@ public class TestUtilisateurRepository {
                 .email("verif@bookhub.fr")
                 .nom("Nom")
                 .prenom("Prenom")
-                .motDePasse("123456")
-                .role("BIBLIOTHECAIRE")
+                .pseudo("Jojo")
+                .motDePasse("P@ssword12345678")
+                .role("LIBRARIAN")
                 .build();
         entityManager.persistFlushFind(utilisateur);
 

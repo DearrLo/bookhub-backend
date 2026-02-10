@@ -54,5 +54,6 @@ public class Livre {
 
 	@OneToMany(mappedBy = "livre", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("livre")
+	@ToString.Exclude
 	private List<Commentaire> commentaires;
 }

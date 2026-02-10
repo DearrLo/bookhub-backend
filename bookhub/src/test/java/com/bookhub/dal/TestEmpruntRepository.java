@@ -37,8 +37,9 @@ public class TestEmpruntRepository {
                 .email("solena8@gmail.com")
                 .nom("Toussaint")
                 .prenom("Soléna")
-                .motDePasse("solena8")
-                .role("LECTEUR")
+                .pseudo("soso")
+                .motDePasse("Aldldl!solena8")
+                .role("USER")
                 .build();
 
         final Categorie entiteCategorie = Categorie.builder()

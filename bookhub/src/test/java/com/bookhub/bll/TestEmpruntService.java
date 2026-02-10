@@ -5,6 +5,7 @@ import com.bookhub.bo.Livre;
 import com.bookhub.bo.StatutEmprunt;
 import com.bookhub.bo.Utilisateur;
 import com.bookhub.dal.EmpruntRepository;
+import com.bookhub.dal.LivreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,6 +31,9 @@ public class TestEmpruntService {
     private EmpruntRepository empruntRepository;
 
     @Mock
+    private LivreRepository livreRepository;
+
+    @Mock
     private MessageSource messageSource;
 
     private Utilisateur lecteur;
@@ -38,16 +43,16 @@ public class TestEmpruntService {
     void init() {
         MockitoAnnotations.openMocks(this);
         when(messageSource.getMessage(anyString(), any(), any(Locale.class))).thenReturn("message test");
+        empruntService = new EmpruntServiceImpl(empruntRepository, livreRepository, messageSource);
 
-        empruntService = new EmpruntServiceImpl(empruntRepository, messageSource);
-
-        lecteur = Utilisateur.builder().email("lecteur@test.fr").build();
+        lecteur = Utilisateur.builder().email("solena@test.fr").build();
         livre = Livre.builder().id(1).stock(5).build();
+
+        when(livreRepository.findById(anyInt())).thenReturn(Optional.of(livre));
     }
 
     @Test
     void test_demandeEmprunt_limite_atteinte() {
-        // Simule déjà 3 emprunts en cours
         when(empruntRepository.countByUtilisateur_EmailAndDateDeRetourEffectiveIsNull(lecteur.getEmail()))
                 .thenReturn(3L);
 
@@ -107,13 +112,15 @@ public class TestEmpruntService {
         String email = "solena@test.fr";
         empruntService.afficherHistoriqueDEmprunts(email);
 
-        // Vérifie l'appel à la méthode spécifique du repository
         verify(empruntRepository).findByUtilisateur_EmailOrderByDateDEmpruntDesc(email);
     }
 
     @Test
     void test_validerEmprunt_stock_epuise() {
-        Livre livreSansStock = Livre.builder().stock(0).build();
+        Livre livreSansStock = Livre.builder().id(2).stock(0).build();
+
+        when(livreRepository.findById(2)).thenReturn(Optional.of(livreSansStock));
+
         Emprunt emprunt = Emprunt.builder().utilisateur(lecteur).livre(livreSansStock).build();
 
         when(messageSource.getMessage(eq("loan.not.available"), any(), any(Locale.class)))

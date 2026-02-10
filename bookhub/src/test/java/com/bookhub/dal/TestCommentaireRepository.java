@@ -39,8 +39,9 @@ public class TestCommentaireRepository {
                 .email("solena8@gmail.com")
                 .nom("Toussaint")
                 .prenom("Soléna")
-                .motDePasse("solena8")
-                .role("LECTEUR")
+                .pseudo("soso")
+                .motDePasse("sAldld!olena8")
+                .role("USER")
                 .build();
 
         final Categorie entiteCategorie = Categorie.builder()

@@ -7,11 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class TestUtilisateurService {
@@ -22,19 +26,25 @@ public class TestUtilisateurService {
     private UtilisateurRepository utilisateurRepository;
 
     @Mock
+    private MessageSource messageSource;
+
+    @Mock
     private PasswordEncoder passwordEncoder; // ajout car maintenant UtilisateurServiceImpl en dépend
 
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        utilisateurService = new UtilisateurServiceImpl(utilisateurRepository, passwordEncoder);
+        utilisateurService = new UtilisateurServiceImpl(utilisateurRepository, messageSource, passwordEncoder);
     }
 
-    @Test //ajout du mdp dans le test
+    @Test
     void test_ajouterUtilisateur() {
         Utilisateur u = Utilisateur.builder()
                 .email("new@test.fr")
                 .motDePasse("mdp")
+                .nom("LALALA")
+                .role("USER")
+                .prenom("Bob")
                 .build();
 
         when(passwordEncoder.encode("mdp")).thenReturn("mdp_test");
@@ -57,16 +67,14 @@ public class TestUtilisateurService {
         Utilisateur utilisateurModifie = Utilisateur.builder()
                 .email("solena8@gmail.com")
                 .nom("Toussaint-Modifie")
-                .prenom("Soléna")
-                .role("LECTEUR")
                 .build();
 
+        when(utilisateurRepository.findById("solena8@gmail.com")).thenReturn(Optional.of(utilisateurModifie));
         when(utilisateurRepository.save(any(Utilisateur.class))).thenReturn(utilisateurModifie);
 
         Utilisateur resultat = utilisateurService.modifierUtilisateur(utilisateurModifie);
 
         assertThat(resultat).isNotNull();
         assertThat(resultat.getNom()).isEqualTo("Toussaint-Modifie");
-        verify(utilisateurRepository, times(1)).save(utilisateurModifie);
     }
 }

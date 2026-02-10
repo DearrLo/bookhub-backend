@@ -127,7 +127,11 @@ public class TestLivreService {
 
     @Test
     void test_supprimer_livre() {
-        livreService.supprimer(1);
-        verify(livreRepository).deleteById(1);
+        Integer idLivre = 1;
+        when(livreRepository.findById(idLivre)).thenReturn(Optional.of(new Livre()));
+
+        livreService.supprimer(idLivre);
+
+        verify(livreRepository, times(1)).deleteById(idLivre);
     }
 }
