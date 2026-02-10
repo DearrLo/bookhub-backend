@@ -54,18 +54,14 @@ public class EmpruntController {
     }
 
     @PutMapping("/{id}/return")
-    public ResponseEntity<?> miseAJourEmprunt(@Valid @RequestBody Emprunt emprunt) {
+    public ResponseEntity<?> miseAJourEmprunt(@PathVariable("id") Integer id) {
         try {
-            if (emprunt == null || emprunt.getId() == null || emprunt.getId() <= 0) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body("L'emprunt et l'identifiant sont obligatoires");
-            }
+            Emprunt emprunt = new Emprunt();
+            emprunt.setId(id);
             empruntService.validerRetourLivre(emprunt);
-            return ResponseEntity.ok(emprunt);
+            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
     }
-
-
 }
