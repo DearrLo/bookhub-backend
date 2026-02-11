@@ -7,6 +7,8 @@ public interface UtilisateurService {
     void ajouterUtilisateur(Utilisateur utilisateur);
 
     Utilisateur modifierUtilisateur(Utilisateur utilisateur);
+    
+    Utilisateur trouverParEmail(String email);
 
     void supprimerUtilisateur(String email);
 }

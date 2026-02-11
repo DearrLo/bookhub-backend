@@ -14,62 +14,70 @@ import java.util.Locale;
 @Service
 public class UtilisateurServiceImpl implements UtilisateurService {
 
-    private final UtilisateurRepository utilisateurRepository;
-    private final MessageSource messageSource;
-    private PasswordEncoder passwordEncoder;
+	private final UtilisateurRepository utilisateurRepository;
+	private final MessageSource messageSource;
+	private PasswordEncoder passwordEncoder;
 
-    public void validerUtilisateur(Utilisateur utilisateur){
-        if (utilisateur == null) {
-            throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
-        }
-        if (utilisateur.getEmail() == null) {
-            throw new RuntimeException(messageSource.getMessage("user.email.required", null, Locale.getDefault()));
-        }
-        if (utilisateurRepository.existsByEmail(utilisateur.getEmail())) {
-            throw new RuntimeException(messageSource.getMessage("user.email.exists", new Object[]{utilisateur.getEmail()}, Locale.getDefault()));
-        }
-        if (utilisateur.getNom() == null) {
-            throw new RuntimeException(messageSource.getMessage("user.name.required", null, Locale.getDefault()));
-        }
-        if (utilisateur.getRole() == null) {
-            throw new RuntimeException(messageSource.getMessage("user.role.required", null, Locale.getDefault()));
-        }
-        if (utilisateur.getPrenom() == null) {
-            throw new RuntimeException(messageSource.getMessage("user.surname.required", null, Locale.getDefault()));
-        }
-        if (utilisateur.getMotDePasse() == null) {
-            throw new RuntimeException(messageSource.getMessage("user.password.required", null, Locale.getDefault()));
-        }
-    }
-    @Override
-    public void ajouterUtilisateur(Utilisateur utilisateur) {
-        validerUtilisateur(utilisateur);
-        utilisateur.setMotDePasse(
-                passwordEncoder.encode(utilisateur.getMotDePasse()));
-        try {
-            utilisateurRepository.save(utilisateur);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(messageSource.getMessage("bookhub_user.save.failed", null, Locale.getDefault()));
-        }
-    }
+	public void validerUtilisateur(Utilisateur utilisateur) {
+		if (utilisateur == null) {
+			throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
+		}
+		if (utilisateur.getEmail() == null) {
+			throw new RuntimeException(messageSource.getMessage("user.email.required", null, Locale.getDefault()));
+		}
+		if (utilisateurRepository.existsByEmail(utilisateur.getEmail())) {
+			throw new RuntimeException(messageSource.getMessage("user.email.exists",
+					new Object[] { utilisateur.getEmail() }, Locale.getDefault()));
+		}
+		if (utilisateur.getNom() == null) {
+			throw new RuntimeException(messageSource.getMessage("user.name.required", null, Locale.getDefault()));
+		}
+		if (utilisateur.getRole() == null) {
+			throw new RuntimeException(messageSource.getMessage("user.role.required", null, Locale.getDefault()));
+		}
+		if (utilisateur.getPrenom() == null) {
+			throw new RuntimeException(messageSource.getMessage("user.surname.required", null, Locale.getDefault()));
+		}
+		if (utilisateur.getMotDePasse() == null) {
+			throw new RuntimeException(messageSource.getMessage("user.password.required", null, Locale.getDefault()));
+		}
+	}
 
-    @Transactional
-    public Utilisateur modifierUtilisateur(Utilisateur utilisateurModifie) {
-        Utilisateur utilisateurEnBase = utilisateurRepository.findById(utilisateurModifie.getEmail())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+	@Override
+	public void ajouterUtilisateur(Utilisateur utilisateur) {
+		validerUtilisateur(utilisateur);
+		utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
+		try {
+			utilisateurRepository.save(utilisateur);
+		} catch (RuntimeException e) {
+			throw new RuntimeException(messageSource.getMessage("bookhub_user.save.failed", null, Locale.getDefault()));
+		}
+	}
 
-        utilisateurEnBase.setNom(utilisateurModifie.getNom());
-        utilisateurEnBase.setPrenom(utilisateurModifie.getPrenom());
-        utilisateurEnBase.setPseudo(utilisateurModifie.getPseudo());
+	@Transactional
+	public Utilisateur modifierUtilisateur(Utilisateur utilisateurModifie) {
+		Utilisateur utilisateurEnBase = utilisateurRepository.findById(utilisateurModifie.getEmail())
+				.orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        if (utilisateurModifie.getMotDePasse() != null && !utilisateurModifie.getMotDePasse().isEmpty()) {
-            utilisateurEnBase.setMotDePasse(passwordEncoder.encode(utilisateurModifie.getMotDePasse()));
-        }
+		utilisateurEnBase.setNom(utilisateurModifie.getNom());
+		utilisateurEnBase.setPrenom(utilisateurModifie.getPrenom());
+		utilisateurEnBase.setPseudo(utilisateurModifie.getPseudo());
 
-        return utilisateurRepository.save(utilisateurEnBase);
-    }
-    @Override
-    public void supprimerUtilisateur(String email) {
-        utilisateurRepository.deleteById(email);
-    }
+		if (utilisateurModifie.getMotDePasse() != null && !utilisateurModifie.getMotDePasse().isEmpty()) {
+			utilisateurEnBase.setMotDePasse(passwordEncoder.encode(utilisateurModifie.getMotDePasse()));
+		}
+
+		return utilisateurRepository.save(utilisateurEnBase);
+	}
+
+	@Override
+	public void supprimerUtilisateur(String email) {
+		utilisateurRepository.deleteById(email);
+	}
+
+	@Override
+	public Utilisateur trouverParEmail(String email) {
+		return utilisateurRepository.findByEmail(email)
+				.orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+	}
 }
