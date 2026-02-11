@@ -1,5 +1,7 @@
 package com.bookhub.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -24,71 +30,101 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    /**
-     * Configure la chaîne de filtres de sécurité.
-     * Définit les accès publics (Swagger, Auth) et les routes protégées par rôles (USER, LIBRARIAN, ADMIN).
-     */
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .cors(org.springframework.security.config.Customizer.withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(csrf -> csrf.disable())
+		http
+			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.csrf(csrf -> csrf.disable())
 
-                .authorizeHttpRequests(auth -> auth
+			// CORS - autorisation Angular pour appels d'API
+			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                        // Accès publics : Authentification et Documentation API
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+			.authorizeHttpRequests(auth -> auth
 
-                        // Catalogue de livres
-                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/books").hasRole("LIBRARIAN")
-                        .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("LIBRARIAN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
+				// CORS - autorise aussi les requêtes techniques (préflight)
+				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Gestion des Emprunts
-                        .requestMatchers(HttpMethod.GET, "/api/loans").hasRole("LIBRARIAN")
-                        .requestMatchers(HttpMethod.GET, "/api/loans/my").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/loans").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasRole("LIBRARIAN")
+				// Publiques
+				.requestMatchers("/api/auth/**").permitAll()
 
-                        // Gestion des Réservations
-                        .requestMatchers(HttpMethod.GET, "/api/reservations/my").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/reservations").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/reservations/**").hasRole("USER")
+				.requestMatchers(
+						"/v3/api-docs/**",
+						"/swagger-ui/**",
+						"/swagger-ui.html"
+				).permitAll()
 
-                        // Gestion des Commentaires (Avis)
-                        .requestMatchers(HttpMethod.POST, "/api/books/*/ratings").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/ratings/*").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/ratings/**").hasRole("LIBRARIAN")
+				// Livres
+				.requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/books").hasRole("LIBRARIAN")
+				.requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("LIBRARIAN")
+				.requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
 
-                        .anyRequest().authenticated())
+				// Emprunts
+				.requestMatchers(HttpMethod.GET, "/api/loans").hasRole("LIBRARIAN")
 
-                .formLogin(form -> form.disable()).httpBasic(basic -> basic.disable())
+				// /api/loans/my = mes emprunts (USER)
+				.requestMatchers(HttpMethod.GET, "/api/loans/my").hasRole("USER")
 
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+				// /api/loans = emprunter (USER)
+				.requestMatchers(HttpMethod.POST, "/api/loans").hasRole("USER")
 
-        return http.build();
-    }
+				// /api/loans/{id}/return = valider retour (LIBRARIAN)
+				.requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasRole("LIBRARIAN")
 
-    /**
-     * Définit l'encodeur de mot de passe utilisé pour BCrypt (force 12).
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
+				// Réservations
+				.requestMatchers(HttpMethod.GET, "/api/reservations/my").hasRole("USER")
+				.requestMatchers(HttpMethod.POST, "/api/reservations").hasRole("USER")
+				.requestMatchers(HttpMethod.DELETE, "/api/reservations/**").hasRole("USER")
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+				// Commentaires / Ratings
+				.requestMatchers(HttpMethod.POST, "/api/books/*/ratings").hasRole("USER")
+				.requestMatchers(HttpMethod.PUT, "/api/ratings/*").hasRole("USER")
+				.requestMatchers(HttpMethod.DELETE, "/api/ratings/**").hasRole("LIBRARIAN")
+
+				.anyRequest().authenticated()
+			)
+
+			.formLogin(form -> form.disable())
+			.httpBasic(basic -> basic.disable())
+
+			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+		return http.build();
+	}
+
+	// CORS - règles et autorisations pour appels API (méthodes, headers & identité)
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration config = new CorsConfiguration();
+
+		// Autorise seulement le front Angular local (port 4200)
+		config.setAllowedOrigins(List.of("http://localhost:4200"));
+
+		// Autorise les méthodes permises
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+		// Autorise les headers JWT et JSON envoyés par le front
+		config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+
+		// Autorise l’envoi de credentials (cookies / auth)
+		config.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+
+		return source;
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(12);
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
 }

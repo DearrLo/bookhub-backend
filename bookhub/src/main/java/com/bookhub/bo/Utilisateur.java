@@ -37,6 +37,9 @@ public class Utilisateur {
 	@NotNull
 	@Column(name = "SURNAME", nullable = false, length = 100)
 	private String nom;
+	
+	@Column(name = "PHONE", length = 20)
+	private String telephone;
 
 	/** Pseudo affiché publiquement (ex: pour les commentaires). */
 	@NotNull

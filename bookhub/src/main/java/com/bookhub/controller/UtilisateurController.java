@@ -18,7 +18,7 @@ public class UtilisateurController {
 
     @GetMapping("/me")
     public ResponseEntity<?> me(Authentication authentication) {
-        String email = authentication.getName(); 
+        String email = authentication.getName();
         Utilisateur u = utilisateurService.trouverParEmail(email);
 
         // on renvoie sans mot de passe

@@ -20,7 +20,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
     private final MessageSource messageSource;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Valide la conformité des données d'un utilisateur avant traitement.
@@ -33,16 +33,17 @@ public class UtilisateurServiceImpl implements UtilisateurService {
             throw new RuntimeException(messageSource.getMessage("user.email.required", null, Locale.getDefault()));
         }
         if (utilisateurRepository.existsByEmail(utilisateur.getEmail())) {
-            throw new RuntimeException(messageSource.getMessage("user.email.exists", new Object[]{utilisateur.getEmail()}, Locale.getDefault()));
+            throw new RuntimeException(messageSource.getMessage("user.email.exists",
+                    new Object[]{utilisateur.getEmail()}, Locale.getDefault()));
+        }
+        if (utilisateur.getPrenom() == null) {
+            throw new RuntimeException(messageSource.getMessage("user.surname.required", null, Locale.getDefault()));
         }
         if (utilisateur.getNom() == null) {
             throw new RuntimeException(messageSource.getMessage("user.name.required", null, Locale.getDefault()));
         }
         if (utilisateur.getRole() == null) {
             throw new RuntimeException(messageSource.getMessage("user.role.required", null, Locale.getDefault()));
-        }
-        if (utilisateur.getPrenom() == null) {
-            throw new RuntimeException(messageSource.getMessage("user.surname.required", null, Locale.getDefault()));
         }
         if (utilisateur.getMotDePasse() == null) {
             throw new RuntimeException(messageSource.getMessage("user.password.required", null, Locale.getDefault()));
@@ -76,6 +77,12 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         utilisateurEnBase.setPrenom(utilisateurModifie.getPrenom());
         utilisateurEnBase.setPseudo(utilisateurModifie.getPseudo());
 
+        // tel : ne pas écraser existant si front n'envoie rien
+        if (utilisateurModifie.getTelephone() != null) {
+            utilisateurEnBase.setTelephone(utilisateurModifie.getTelephone());
+        }
+
+        // mdp : seulement si fourni
         if (utilisateurModifie.getMotDePasse() != null && !utilisateurModifie.getMotDePasse().isEmpty()) {
             utilisateurEnBase.setMotDePasse(passwordEncoder.encode(utilisateurModifie.getMotDePasse()));
         }
@@ -83,20 +90,14 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         return utilisateurRepository.save(utilisateurEnBase);
     }
 
-    /**
-     * Recherche un utilisateur par son adresse email.
-     */
+    @Override
+    public void supprimerUtilisateur(String email) {
+        utilisateurRepository.deleteById(email);
+    }
+
     @Override
     public Utilisateur trouverParEmail(String email) {
         return utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-    }
-
-    /**
-     * Supprime un utilisateur via son email.
-     */
-    @Override
-    public void supprimerUtilisateur(String email) {
-        utilisateurRepository.deleteById(email);
     }
 }
