@@ -17,17 +17,30 @@ public class LivreServiceImpl implements LivreService {
 	private final LivreRepository livreRepository;
 	private final MessageSource messageSource;
 
+	/**
+	 * Récupère l'intégralité des livres enregistrés en base.
+	 * @return Liste de tous les livres.
+	 */
 	@Override
 	public List<Livre> afficherLivres() {
 		return livreRepository.findAll();
 	}
 
+	/**
+	 * Récupère les informations détaillées d'un livre.
+	 * @param id Identifiant unique du livre.
+	 * @return L'objet Livre ou null s'il n'est pas trouvé.
+	 */
 	@Override
 	public Livre afficherDetailLivre(Integer id) {
 		return livreRepository.findById(id)
 				.orElse(null);
 	}
 
+	/**
+	 * Effectue les vérifications d'intégrité avant sauvegarde (ISBN unique, champs obligatoires).
+	 * @param livre Le livre à valider.
+	 */
 	public void validerLivre(Livre livre){
 		if (livre == null) {
 			throw new RuntimeException(messageSource.getMessage("book.required", null, Locale.getDefault()));
@@ -52,6 +65,10 @@ public class LivreServiceImpl implements LivreService {
 		}
 	}
 
+	/**
+	 * Ajoute un nouveau livre au catalogue après validation.
+	 * @param livre Le livre à ajouter.
+	 */
 	@Override
 	public Livre ajouter(Livre livre) {
 		validerLivre(livre);
@@ -63,6 +80,11 @@ public class LivreServiceImpl implements LivreService {
 		}
 	}
 
+	/**
+	 * Modifie les informations d'un livre existant en base de données.
+	 * @param livreEnvoye Les nouvelles données du livre.
+	 * @return Le livre mis à jour.
+	 */
 	@Override
 	public Livre modifier(Livre livreEnvoye) {
 		Livre livreEnBase = livreRepository.findById(livreEnvoye.getId())
@@ -91,15 +113,30 @@ public class LivreServiceImpl implements LivreService {
 		return livreRepository.save(livreEnBase);
 	}
 
+	/**
+	 * Supprime un livre du catalogue.
+	 * @param id Identifiant du livre à retirer.
+	 */
 	@Override
 	public void supprimer(Integer id) {
 		livreRepository.deleteById(id);
 	}
 
+	/**
+	 * Filtre le catalogue par catégorie.
+	 * @param idCategorie Identifiant de la catégorie ciblée.
+	 * @return Liste des livres appartenant à cette catégorie.
+	 */
 	@Override
 	public List<Livre> chargerLivreParCategorie(Integer idCategorie) {
 		return livreRepository.findByCategorie_Id(idCategorie);
 	}
+
+	/**
+	 * Recherche textuelle multicritères dans le catalogue.
+	 * @param critere Terme recherché (titre, auteur ou ISBN).
+	 * @return Liste des livres correspondant au critère (insensible à la casse).
+	 */
 
 	@Override
 	public List<Livre> rechercherLivres(String critere) {
@@ -108,6 +145,10 @@ public class LivreServiceImpl implements LivreService {
 		);
 	}
 
+	/**
+	 * Liste les livres actuellement disponibles au prêt (stock > 0).
+	 * @return Liste des livres en stock.
+	 */
 	@Override
 	public List<Livre> chargerLivreParDisponibilite() {
 		return livreRepository.findByStockGreaterThan(0);

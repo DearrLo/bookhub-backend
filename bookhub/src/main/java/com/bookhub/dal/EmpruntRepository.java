@@ -4,25 +4,28 @@ import com.bookhub.bo.Emprunt;
 import com.bookhub.bo.StatutEmprunt;
 import com.bookhub.bo.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Interface de persistance pour la gestion des emprunts.
+ * Permet le suivi des flux de prêts, des retours et l'identification des retards.
+ */
 public interface EmpruntRepository extends JpaRepository<Emprunt, Integer> {
 
+    /** Récupère l'historique complet des emprunts d'un utilisateur trié par date. */
     List<Emprunt> findByUtilisateur_EmailOrderByDateDEmpruntDesc(String email);
 
-//    pour le dashboard du bilbiothécaire, tous emprunts en cours (sauf statut rendu)
+    /** Récupère tous les emprunts ayant un statut spécifique (ex: non rendus). */
     List<Emprunt> findByStatutNot(StatutEmprunt statut);
 
-    //  pour compter les emprunts en cours pour UN utilisateur spécifique
+    /** Compte le nombre d'emprunts actifs pour un utilisateur (livres non encore restitués). */
     long countByUtilisateur_EmailAndDateDeRetourEffectiveIsNull(String email);
 
-//    pour trouver les retards d'un utilisateur
+    /** Identifie les emprunts en retard pour un utilisateur spécifique. */
     List<Emprunt> findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(
             Utilisateur utilisateur, LocalDateTime now);
 
-//    pour le dashboard du bilbiothécaire, tous les retards
+    /** Identifie tous les emprunts en retard dans la bibliothèque (pour le dashboard bibliothécaire). */
     List<Emprunt> findByDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(LocalDateTime now);
-
 }

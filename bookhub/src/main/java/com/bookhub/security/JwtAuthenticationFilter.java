@@ -14,6 +14,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Filtre de sécurité interceptant chaque requête HTTP pour valider le jeton JWT.
+ * Extrait le token du header 'Authorization', le valide et injecte l'utilisateur dans le contexte de sécurité.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -21,12 +25,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    // non concernées par les endpoints psq /login & /register doivent êtres accesibles sans jwt
+    /**
+     * Définit les points d'entrée qui ne doivent pas être filtrés (Authentification publique).
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().startsWith("/api/auth/");
     }
-    
+
+    /**
+     * Logique interne du filtre : extraction du Bearer token, validation et authentification.
+     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -34,32 +43,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-    	// header authorisation 
         String authHeader = request.getHeader("Authorization");
-        
-        // si pas de header / token, la requête passe
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // catch le token
         String jwt = authHeader.substring(7);
         String username;
-        
-        // extraction de l'id (mail) user depuis le token
+
         try {
             username = jwtService.extractUsername(jwt);
-       
         } catch (Exception e) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // check si l'utilisateur est pas déjà authentifié 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-        	
-        	// chargement de l'user depuis la bdd avec validation token
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (jwtService.isTokenValid(jwt, userDetails)) {

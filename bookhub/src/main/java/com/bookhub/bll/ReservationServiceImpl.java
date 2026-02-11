@@ -24,16 +24,33 @@ public class ReservationServiceImpl implements ReservationService {
     private LivreRepository livreRepository;
     private MessageSource messageSource;
 
+    /**
+     * Récupère l'historique des réservations d'un utilisateur spécifique.
+     * Les résultats sont triés par date de demande décroissante.
+     * @param email L'adresse email de l'utilisateur concerné.
+     * @return Une liste de réservations.
+     */
     @Override
     public List<Reservation> trouverParEmail(String email) {
         return reservationRepository.findByUtilisateur_EmailOrderByDateDeDemandeDesc(email);
     }
 
+    /**
+     * Supprime une réservation par son identifiant unique.
+     * @param id L'identifiant de la réservation.
+     */
     @Override
     public void supprimer(Integer id) {
         reservationRepository.deleteById(id);
     }
 
+    /**
+     * Applique les règles métier pour valider une demande de réservation.
+     * Vérifie l'existence du livre, de l'utilisateur, et que l'utilisateur
+     * n'a pas dépassé la limite maximale de réservations actives.
+     * @param reservation L'objet réservation à valider.
+     * @throws RuntimeException si les conditions de réservation ne sont pas remplies.
+     */
     private void validerReservation(Reservation reservation) {
         if (reservation == null) {
             throw new RuntimeException(messageSource.getMessage("reservation.required", null, Locale.getDefault()));
@@ -62,6 +79,11 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setDateDeDemande(LocalDateTime.now());
     }
 
+    /**
+     * Crée une nouvelle réservation avec le statut "EN_ATTENTE".
+     * @param reservation Les données de la réservation.
+     * @return La réservation enregistrée.
+     */
     @Override
     public Reservation reserverLivre(Reservation reservation) {
         Livre livreBdd = livreRepository.findById(reservation.getLivre().getId())
@@ -91,6 +113,11 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    /**
+     * Annule une réservation active en changeant son statut.
+     * @param idLivre L'id du livre concerné.
+     * @param emailUtilisateur L'email du demandeur.
+     */
     @Override
     public void annulerReservation(Integer idLivre, String emailUtilisateur) {
         Reservation reservation = reservationRepository.findByLivre_IdAndUtilisateur_Email(idLivre, emailUtilisateur)

@@ -16,6 +16,11 @@ public class CommentaireController {
 
     private CommentaireService commentaireService;
 
+    /**
+     * API POST : Permet à un utilisateur de laisser une note et un avis sur un livre.
+     * @param commentaire L'objet commentaire validé.
+     * @return 201 Created ou 406 en cas d'erreur métier.
+     */
     @PostMapping("books/{id}/ratings")
     public ResponseEntity<?> ajoutCommentaire(@Valid @RequestBody Commentaire commentaire) {
         try {
@@ -28,6 +33,11 @@ public class CommentaireController {
         }
     }
 
+    /**
+     * Modifie un avis utilisateur existant.
+     * @param commentaire Nouvelles données du commentaire.
+     * @return 200 OK avec l'objet mis à jour ou 406.
+     */
     @PutMapping("/ratings/{id}")
     public ResponseEntity<?> miseAJourCommentaire(@RequestBody Commentaire commentaire) {
         try {
@@ -42,6 +52,11 @@ public class CommentaireController {
         }
     }
 
+    /**
+     * Supprime définitivement une note et un avis.
+     * @param idInPath ID du commentaire à supprimer.
+     * @return Message de confirmation ou erreur 406.
+     */
     @DeleteMapping("/ratings/{id}")
     public ResponseEntity<?> deleteCommentaire(@PathVariable("id") String idInPath) {
         try {

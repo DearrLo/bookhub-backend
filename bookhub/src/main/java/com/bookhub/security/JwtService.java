@@ -16,17 +16,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Service utilitaire pour la gestion des JSON Web Tokens (JWT).
+ * Responsable de la génération, du parsing et de la validation des jetons.
+ */
 @Service
 public class JwtService {
 
 	@Value("${security.jwt.secret}")
 	private String secret;
 
-	// durée de vie du token
 	@Value("${security.jwt.expiration-ms:86400000}")
 	private long expirationMs;
 
-	// génère JWT
+	/**
+	 * Génère un token JWT incluant les rôles de l'utilisateur comme revendications (claims).
+	 * @param userDetails Les détails de l'utilisateur authentifié.
+	 * @return Un jeton JWT compacté.
+	 */
 	public String generateToken(UserDetails userDetails) {
 		Map<String, Object> extraClaims = new HashMap<>();
 
@@ -38,7 +45,7 @@ public class JwtService {
 		Date expiry = new Date(now.getTime() + expirationMs);
 
 		return Jwts.builder()
-				.setClaims(extraClaims) // On injecte les rôles ici
+				.setClaims(extraClaims)
 				.setSubject(userDetails.getUsername())
 				.setIssuedAt(now)
 				.setExpiration(expiry)
@@ -46,12 +53,16 @@ public class JwtService {
 				.compact();
 	}
 
-	// récupère l’email depuis le token
+	/**
+	 * Extrait le 'subject' (email) du token.
+	 */
 	public String extractUsername(String token) {
 		return extractAllClaims(token).getSubject();
 	}
 
-	// vérifie que le token match l'utilisateur
+	/**
+	 * Vérifie si le token appartient à l'utilisateur et s'il n'est pas expiré.
+	 */
 	public boolean isTokenValid(String token, UserDetails userDetails) {
 		String username = extractUsername(token);
 		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);

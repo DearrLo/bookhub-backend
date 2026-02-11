@@ -19,6 +19,11 @@ public class ReservationController {
 
     private ReservationService reservationService;
 
+    /**
+     * Récupère les réservations de l'utilisateur actuellement authentifié.
+     * Utilise le SecurityContext pour extraire l'email du token JWT.
+     * @return 200 OK avec la liste, ou 204 No Content si aucune réservation n'est trouvée.
+     */
     @GetMapping("/my")
     public ResponseEntity<List<Reservation>> listeReservationsparUtilisateur() {
 
@@ -30,7 +35,11 @@ public class ReservationController {
         return ResponseEntity.ok(mesResas);
     }
 
-
+    /**
+     * Enregistre une nouvelle demande de réservation de livre.
+     * @param reservation Objet validé contenant les détails de la demande.
+     * @return 201 Created ou 406 Not Acceptable en cas d'erreur métier.
+     */
     @PostMapping
     public ResponseEntity<?> ajoutReservation(@Valid @RequestBody Reservation reservation) {
         try {
@@ -43,6 +52,11 @@ public class ReservationController {
         }
     }
 
+    /**
+     * Supprime une réservation via son ID passé dans l'URL.
+     * @param idInPath L'identifiant sous forme de chaîne.
+     * @return Message de confirmation ou 406 si l'ID est invalide.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> supprimerReservation(@PathVariable("id") String idInPath) {
         try {

@@ -31,6 +31,12 @@ public class CommentaireServiceImpl implements CommentaireService {
 
     }
 
+    /**
+     * Enregistre un avis utilisateur sur un livre.
+     * Vérifie que la note est comprise entre 0 et 5.
+     * @param commentaire L'avis à sauvegarder.
+     * @return Le commentaire enregistré avec sa date de création.
+     */
     @Override
     public Commentaire laisserCommentaire(Commentaire commentaire) {
         validerCommentaire(commentaire);
@@ -41,6 +47,13 @@ public class CommentaireServiceImpl implements CommentaireService {
         }
     }
 
+    /**
+     * Modifie un commentaire existant en base de données.
+     * Met à jour uniquement le texte de l'avis et la note associée.
+     * @param commentaireEnvoye Objet contenant l'ID du commentaire et les nouvelles données.
+     * @return Le commentaire mis à jour.
+     * @throws RuntimeException si le commentaire n'existe pas en base.
+     */
     @Transactional
     @Override
     public Commentaire modifierCommentaire(Commentaire commentaireEnvoye) {
@@ -51,7 +64,10 @@ public class CommentaireServiceImpl implements CommentaireService {
         return commentaireRepository.save(comEnBase);
     }
 
-
+    /**
+     * Supprime un commentaire de la base de données.
+     * @param id Identifiant unique du commentaire à supprimer.
+     */
     @Override
     public void supprimerCommentaire(Integer id) {
         commentaireRepository.deleteById(id);

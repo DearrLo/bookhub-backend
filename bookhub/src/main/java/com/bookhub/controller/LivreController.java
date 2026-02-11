@@ -19,6 +19,10 @@ public class LivreController {
 
     private LivreService livreService;
 
+    /**
+     * API GET : Récupère tous les livres du catalogue.
+     * @return 200 OK avec la liste ou 204 No Content si vide.
+     */
     @GetMapping
     public ResponseEntity<?> rechercherTousLivres() {
         final List<Livre> livres = livreService.afficherLivres();
@@ -29,6 +33,11 @@ public class LivreController {
         return ResponseEntity.ok(livres);
     }
 
+    /**
+     * API GET : Récupère le détail d'un livre par son identifiant.
+     * @param idInPath L'identifiant passé dans l'URL.
+     * @return 200 OK, 404 Not Found si inexistant, ou 406 Not Acceptable si l'ID n'est pas un entier.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> rechercherLivreParId(@PathVariable("id") String idInPath) {
 
@@ -46,6 +55,11 @@ public class LivreController {
         }
     }
 
+    /**
+     * API POST : Ajoute un nouveau livre au catalogue.
+     * @param livre Les données du livre validées par @Valid.
+     * @return 201 Created avec l'objet créé ou 406 en cas d'erreur de validation.
+     */
     @PostMapping
     public ResponseEntity<?> ajoutLivre(@Valid @RequestBody Livre livre) {
         try {
@@ -58,6 +72,11 @@ public class LivreController {
         }
     }
 
+    /**
+     * API PUT : Met à jour les informations d'un livre existant.
+     * @param livre Les nouvelles données du livre.
+     * @return 200 OK avec le livre modifié ou 406 si les données sont invalides.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> miseAJourLivre(@Valid @RequestBody Livre livre) {
         try {

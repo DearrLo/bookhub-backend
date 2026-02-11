@@ -24,6 +24,11 @@ public class AuthentificationController {
     private AuthenticationManager authenticationManager;
     private JwtService jwtService;
 
+    /**
+     * Point d'entrée pour la création de compte (Self-service).
+     * @param utilisateur Objet JSON contenant les données d'inscription.
+     * @return 200 OK en cas de succès, 400 Bad Request avec le motif en cas d'erreur.
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Utilisateur utilisateur) {
         try {
@@ -34,6 +39,12 @@ public class AuthentificationController {
         }
     }
 
+    /**
+     * Point d'entrée pour l'authentification sécurisée.
+     * Vérifie les identifiants et retourne un jeton JWT si l'authentification réussit.
+     * @param loginRequest Objet contenant l'email et le mot de passe en clair.
+     * @return Un objet Map contenant la clé "token", ou 401 Unauthorized.
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Utilisateur loginRequest) {
         try {
