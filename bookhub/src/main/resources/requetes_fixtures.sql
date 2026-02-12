@@ -13,6 +13,9 @@ FROM bookhub_user;
 DELETE
 FROM category;
 
+ALTER TABLE dbo.bookhub_user
+    ADD phone VARCHAR(20) NULL;
+
 INSERT INTO category (label)
 VALUES ('Jeunesse'),
        ('Classique'),
