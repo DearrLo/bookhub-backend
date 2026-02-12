@@ -68,7 +68,8 @@ public class Utilisateur implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority(this.role));
+		// On ajoute systématiquement le préfixe "ROLE_" au contenu du champ role
+		return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
 	}
 
 	@Override
