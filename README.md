@@ -1,81 +1,76 @@
-# 📚 BookHub - Système de Gestion de Bibliothèque
+# 📚 BookHub - Library Management System - Backend Service
+BookHub is a full-stack application designed to digitize library management. It enables the management of a book catalog, automation of loans, and queue management through a reservation system.
+BookHub API : This repository contains the Backend service for the BookHub application. It is a robust REST API built with Spring Boot, handling business logic, data persistence, and security via JWT.
 
-BookHub est une application fullstack conçue pour digitaliser la gestion d'une bibliothèque. Elle permet de gérer un catalogue d'ouvrages, d'automatiser les prêts et de gérer les files d'attente via un système de réservation
+## Technical Stack
 
+Language: Java 17
 
-# 🚀 BookHub API - Backend Service
+Framework: Spring Boot 3 (or 4)
 
-Ce dépôt contient le service Backend de l'application **BookHub**. Il s'agit d'une API REST robuste construite avec Spring Boot, gérant la logique métier, la persistance des données et la sécurité via JWT.
+Security: Spring Security & JWT (Stateless)
 
+Persistence: Spring Data JPA / Hibernate
 
-## 🛠 Stack Technique
-* **Langage :** Java 17
-* **Framework :** Spring Boot 4
-* **Sécurité :** Spring Security & JWT (Stateless)
-* **Persistance :** Spring Data JPA / Hibernate
-* **Base de données :** H2 (Mode persistant pour le développement)
-* **Outils :** Lombok, Gradle, Javadoc
+Database: H2 (Persistent mode for development)
 
+Tools: Lombok, Gradle, Javadoc
 
-## ⚙️ Installation et Lancement
+## Installation and Setup
 
-1. **Cloner le projet**
- 
-``` bash
-git clone https://github.com/ton-pseudo/bookhub.git
+1. **Fork and Clone the project**
+
+```bash
+git clone https://github.com/your-username/bookhub.git
 cd bookhub
 ```
 
-2. **Configuration de la base de donnée:**
-   
-Les paramètres de base de données et la clé secrète JWT se trouvent dans `src/main/resources/application.properties`.
+2. **Database Configuration**
 
-Décommentez la connexion Dcoker à la base de donnnée et commentez la connexion locale.
-   
- Lancer:
- 
- ``` bash
- docker compose up -d
- ```
+Database parameters and the JWT secret key are located in src/main/resources/application.properties.
+Uncomment the Docker database connection and comment out the local connection.
 
-3. **Lancer l'application :**
+To launch:
 
-```bash
+```Bash
+docker compose up -d
+```
+
+3. **Launch the application**:
+
+```Bash
 ./gradlew bootRun
 ```
 
-4. **Run le Backend (Spring Boot)**
-   
-Assurez-vous d'avoir un JDK 17 installé.
+4. **Run the Backend (Spring Boot)**
+
+Ensure you have JDK 17 installed.
 
 Run `BookhubApplication.java`
 
-L'API sera accessible sur : http://localhost:8080
-   
+The API will be accessible at: `http://localhost:8080`
 
-##  Tests et Qualité
 
-Tests Unitaires : JUnit 5 & Mockito (vérification de la logique des Services).
+## Testing and Quality
 
-Lancement des tests : 
+Unit Tests: JUnit 5 & Mockito (verifying Service layer logic).
 
-```bash
+To run the tests:
+
+```Bash
 ./gradlew test
 ```
 
-## Documentations :
+## Documentation
 
-Documentation Javadoc : Générez la doc complète de l'application avec
+**Javadoc** Documentation: Generate the complete application documentation with:
 
-```bash
+```Bash
 ./gradlew javadoc
 ```
-
-(disponible ensuite dans build/docs/javadoc/)
-
-Swagger UI : Une fois le serveur lancé, accédez à la documentation interactive des endpoints 
-
-🔗 `http://localhost:8080/swagger-ui/index.html`
+Run the `index.html` available afterwards in `build/docs/javadoc/`
 
 
+**Swagger UI**: Once the server is launched, access the interactive endpoint documentation at:
 
+`http://localhost:8080/swagger-ui/index.html`
