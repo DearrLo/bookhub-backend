@@ -1,3 +1,6 @@
+# 📚 BookHub - Système de Gestion de Bibliothèque
+BookHub est une application fullstack conçue pour digitaliser la gestion d'une bibliothèque. Elle permet de gérer un catalogue d'ouvrages, d'automatiser les prêts et de gérer les files d'attente via un système de réservation
+
 # 🚀 BookHub API - Backend Service
 
 Ce dépôt contient le service Backend de l'application **BookHub**. Il s'agit d'une API REST robuste construite avec Spring Boot, gérant la logique métier, la persistance des données et la sécurité via JWT.
@@ -15,10 +18,11 @@ Ce dépôt contient le service Backend de l'application **BookHub**. Il s'agit d
 ## ⚙️ Installation et Lancement
 
 1. **Cloner le projet**
-2. 
+ 
 ``` bash
 git clone https://github.com/ton-pseudo/bookhub.git
-cd bookhub```
+cd bookhub
+```
 
 2. **Configuration de la base de donnée:**
 Les paramètres de base de données et la clé secrète JWT se trouvent dans `src/main/resources/application.properties`.
