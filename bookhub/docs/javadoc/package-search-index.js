@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.bookhub"},{"l":"com.bookhub.bll"},{"l":"com.bookhub.bo"},{"l":"com.bookhub.controller"},{"l":"com.bookhub.dal"},{"l":"com.bookhub.security"}];updateSearchResults();

@@ -25,6 +25,7 @@ public class EmpruntServiceImpl implements EmpruntService {
 
     /**
      * Récupère la liste de tous les emprunts actifs (non rendus).
+     *
      * @return Liste des emprunts dont le statut n'est pas 'RENDU'.
      */
     @Override
@@ -34,25 +35,34 @@ public class EmpruntServiceImpl implements EmpruntService {
 
     /**
      * Identifie les emprunts non rendus dont la date d'échéance est dépassée.
+     *
      * @param utilisateur L'utilisateur concerné par la vérification.
      * @return Liste des emprunts en retard.
      */
-    private List<Emprunt> recupererListeEmpruntsEnRetard(Utilisateur utilisateur){ return empruntRepository.findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(utilisateur, LocalDateTime.now());};
+    private List<Emprunt> recupererListeEmpruntsEnRetard(Utilisateur utilisateur) {
+        return empruntRepository.findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(utilisateur, LocalDateTime.now());
+    }
+
+    ;
 
     /**
      * Vérifie si un emprunt est possible selon les règles métier.
      * Contrôle : existence du livre/utilisateur, absence de retards, limite de 3 emprunts, stock disponible.
+     *
      * @param emprunt L'objet emprunt à valider.
      * @throws RuntimeException si une condition de prêt n'est pas remplie.
      */
     private void validerEmprunt(Emprunt emprunt) {
-        if (emprunt == null) throw new RuntimeException(messageSource.getMessage("loan.required", null, Locale.getDefault()));
-        if (emprunt.getLivre() == null) throw new RuntimeException(messageSource.getMessage("book.required", null, Locale.getDefault()));
+        if (emprunt == null)
+            throw new RuntimeException(messageSource.getMessage("loan.required", null, Locale.getDefault()));
+        if (emprunt.getLivre() == null)
+            throw new RuntimeException(messageSource.getMessage("book.required", null, Locale.getDefault()));
 
         Utilisateur lecteur = emprunt.getUtilisateur();
-        if (lecteur == null) throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
+        if (lecteur == null)
+            throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
 
-        if (!recupererListeEmpruntsEnRetard(lecteur).isEmpty()){
+        if (!recupererListeEmpruntsEnRetard(lecteur).isEmpty()) {
             throw new RuntimeException(messageSource.getMessage("loan.impossible.late", null, Locale.getDefault()));
         }
 
@@ -60,10 +70,10 @@ public class EmpruntServiceImpl implements EmpruntService {
         if (nbEmpruntsActifs >= LIMITE_MAX_EMPRUNTS) {
             throw new RuntimeException(messageSource.getMessage("loan.limit.reached", null, Locale.getDefault()));
         }
+
         if (emprunt.getLivre().getStock() <= 0) {
             throw new RuntimeException(messageSource.getMessage("loan.not.available", null, Locale.getDefault()));
         }
-
     }
 
     /**
@@ -72,6 +82,7 @@ public class EmpruntServiceImpl implements EmpruntService {
      * si l'utilisateur n'a pas dépassé la limite d'emprunts et s'il n'est pas en retard.
      * Décrémente automatiquement le stock du livre concerné.
      * * @param emprunt L'objet emprunt contenant le livre et l'utilisateur.
+     *
      * @return L'emprunt sauvegardé avec les dates de retour calculées.
      * @throws RuntimeException si une règle de gestion n'est pas respectée.
      */
@@ -97,6 +108,7 @@ public class EmpruntServiceImpl implements EmpruntService {
     /**
      * Valide le retour d'un livre.
      * Change le statut en "RENDU", enregistre la date réelle et incrémente le stock.
+     *
      * @param emprunt L'emprunt concerné.
      */
     @Transactional
@@ -114,6 +126,7 @@ public class EmpruntServiceImpl implements EmpruntService {
 
     /**
      * Récupère l'historique complet des emprunts d'un lecteur.
+     *
      * @param emailLecteur Identifiant de l'utilisateur.
      * @return Liste des emprunts triés du plus récent au plus ancien.
      */
