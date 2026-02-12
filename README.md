@@ -1,5 +1,6 @@
 # 📚 BookHub - Library Management System - Backend Service
 BookHub is a full-stack application designed to digitize library management. It enables the management of a book catalog, automation of loans, and queue management through a reservation system.
+
 BookHub API : This repository contains the Backend service for the BookHub application. It is a robust REST API built with Spring Boot, handling business logic, data persistence, and security via JWT.
 
 ## Technical Stack
