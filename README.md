@@ -28,8 +28,7 @@ cd bookhub
 
 2. **Database Configuration**
 
-Database parameters and the JWT secret key are located in src/main/resources/application.properties.
-Uncomment the Docker database connection and comment out the local connection.
+Set up an SQL Database with parameters and the JWT secret key in src/main/resources/application.properties.
 
 To launch:
 
