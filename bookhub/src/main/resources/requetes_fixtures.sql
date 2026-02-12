@@ -69,10 +69,10 @@ VALUES ('9782070408504', 'Le Petit Prince', 'Antoine de Saint-Exupéry', 1, 0,
         'Dans un monde totalitaire, Winston Smith tente de résister à l''oppression de Big Brother.',
         'https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg', GETDATE());
 
-INSERT INTO bookhub_user(ROLE, NAME, PSEUDONYM, SURNAME, EMAIL, PASSWORD)
-VALUES ('USER', 'Jean', 'jeannot31', 'André', 'jeannot31@email.com', 'Pompompom1!'),
-       ('ADMIN', 'Nour', 'nourette', 'Martin', 'nour567@email.com', 'Pompompom2!'),
-       ('LIBRARIAN', 'Soléna', 'soso', 'Toussaint', 'solena@email.com', 'Pompompom3!');
+INSERT INTO bookhub_user(ROLE, NAME, PSEUDONYM, SURNAME, EMAIL, PASSWORD, PHONE)
+VALUES ('USER', 'Jean', 'jeannot31', 'André', 'jeannot31@email.com', 'Pompompom1!', '0245678936'),
+       ('ADMIN', 'Nour', 'nourette', 'Martin', 'nour567@email.com', 'Pompompom2!','0545678936'),
+       ('LIBRARIAN', 'Soléna', 'soso', 'Toussaint', 'solena@email.com', 'Pompompom3!','0445678936');
 
 INSERT INTO reservation(BOOK_ID, REQUEST_DATE, RESERVATION_STATUS, USER_ID)
 VALUES (1, GETDATE(), 'EN_ATTENTE', 'jeannot31@email.com'),
@@ -86,7 +86,7 @@ VALUES (3, GETDATE() + 14, null, GETDATE(), 'EMPRUNTE', 'jeannot31@email.com'),
 
 INSERT INTO review(book_id, rating, created_at, commentary, user_id)
 VALUES (1, 4, GETDATE() - 5, 'Pas mal', 'jeannot31@email.com'),
-       (2, 5, GETDATE() - 5, 'Génial', 'jeannot31@email.com'),
+       (4, 5, GETDATE() - 5, 'Génial', 'jeannot31@email.com'),
        (3, 1, GETDATE() - 5, 'Pas trop aimé', 'jeannot31@email.com');
 
 
