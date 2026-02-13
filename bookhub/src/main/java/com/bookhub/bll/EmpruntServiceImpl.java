@@ -3,6 +3,7 @@ package com.bookhub.bll;
 import com.bookhub.bo.*;
 import com.bookhub.dal.EmpruntRepository;
 import com.bookhub.dal.LivreRepository;
+import com.bookhub.dal.UtilisateurRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class EmpruntServiceImpl implements EmpruntService {
     private EmpruntRepository empruntRepository;
     private LivreRepository livreRepository;
     private MessageSource messageSource;
+    private UtilisateurRepository utilisateurRepository;
 
     public static final int DUREE_EMPRUNT_JOURS = 14;
     public static final int LIMITE_MAX_EMPRUNTS = 3;
@@ -51,7 +53,8 @@ public class EmpruntServiceImpl implements EmpruntService {
         if (lecteur == null)
             throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
 
-        List<Emprunt> listeEmpruntsEnRetard = empruntRepository.findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(emprunt.getUtilisateur(), LocalDateTime.now());
+        List<Emprunt> listeEmpruntsEnRetard = empruntRepository
+                .findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(emprunt.getUtilisateur(), LocalDateTime.now());
         if (!listeEmpruntsEnRetard.isEmpty()) {
             throw new RuntimeException(messageSource.getMessage("loan.impossible.late", null, Locale.getDefault()));
         }
@@ -83,6 +86,10 @@ public class EmpruntServiceImpl implements EmpruntService {
                 .orElseThrow(() -> new RuntimeException("Livre introuvable"));
 
         emprunt.setLivre(livreBdd);
+
+        Utilisateur userBdd = utilisateurRepository.findById(emprunt.getUtilisateur().getEmail())
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        emprunt.setUtilisateur(userBdd);
 
         validerEmprunt(emprunt);
 
