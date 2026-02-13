@@ -33,17 +33,6 @@ public class EmpruntServiceImpl implements EmpruntService {
         return empruntRepository.findByStatutNot(StatutEmprunt.RENDU);
     }
 
-    /**
-     * Identifie les emprunts non rendus dont la date d'échéance est dépassée.
-     *
-     * @param utilisateur L'utilisateur concerné par la vérification.
-     * @return Liste des emprunts en retard.
-     */
-    private List<Emprunt> recupererListeEmpruntsEnRetard(Utilisateur utilisateur) {
-        return empruntRepository.findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(utilisateur, LocalDateTime.now());
-    }
-
-    ;
 
     /**
      * Vérifie si un emprunt est possible selon les règles métier.
@@ -62,7 +51,8 @@ public class EmpruntServiceImpl implements EmpruntService {
         if (lecteur == null)
             throw new RuntimeException(messageSource.getMessage("user.required", null, Locale.getDefault()));
 
-        if (!recupererListeEmpruntsEnRetard(lecteur).isEmpty()) {
+        List<Emprunt> listeEmpruntsEnRetard = empruntRepository.findByUtilisateurAndDateDeRetourEffectiveIsNullAndDateDeRetourAttendueBefore(emprunt.getUtilisateur(), LocalDateTime.now());
+        if (!listeEmpruntsEnRetard.isEmpty()) {
             throw new RuntimeException(messageSource.getMessage("loan.impossible.late", null, Locale.getDefault()));
         }
 
